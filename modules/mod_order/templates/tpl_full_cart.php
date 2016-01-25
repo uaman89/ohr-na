@@ -1,0 +1,85 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: bogdan
+ * Date: 10.07.13
+ * Time: 17:42
+ * To change this template use File | Settings | File Templates.
+ */
+?>
+<table cellspacing="0" cellpadding="6" border="0" width="100%" class="full-cart-tbl">
+<tr class="main-tr">
+    <th colspan="2" class="thleft" style="text-align: center; border-left: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6; border-top:1px solid #e6e6e6"><span><?=$multi['TXT_NAME_PROP'];?></span></th>
+
+    <th style="border-top: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6;"><span><?=$multi['FLD_QUANTITY'];?></span></th>
+    <th style="border-top: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6;"><span><?=$multi['TXT_PRICE'];?></span></th>
+    <th style="border-top: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6;"><span><?=$multi['FLD_SUMA']?></span></th>
+    <th class="thright" style="border-top: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6; border-right: 1px solid #e6e6e6;"><span><?=$multi['TXT_DELL'];?></span></th>
+</tr>
+<?
+for($i=0;$i<$rows;$i++){
+    $row = $arr[$i];
+    //var_dump($row);
+    $name = $row['name'];
+    ?><tr id="propText<?=$row["id"];?>">
+        <td>
+            <div class="img-order-prop">
+            <a href="<?=$row['link']?>" title="<?=$name?>" >
+                <img src="<?=$row['src']?>" alt="<?=$row['img_alt']?>" title="<?=$row['img_title']?>">
+            </a>
+            </div>
+        </td>
+        <td>
+            <div class="order-prop-name">
+                <a href="<?=$row['link']?>" title="<?=$name?>"><span><?=$name?></span></a>
+                <span class="short-descr"><?=$row['short']?></span>
+                <div class="dots"></div>
+            </div>
+            <?
+         ?>
+        </td>
+
+
+        <td style="position: relative;display: block;height: 127px;">
+            <div class="order-quantity-wrapper">
+                <input data-c="<?=$row['id']?>" type="text" value="<?=$row['quantity']?>" id="quantity<?=$row['id']?>"  name="quantity[<?=$row['id']?>]"
+                       class="order-prop-quantity validate[required]"
+                       maxlength="2" size="2" onkeypress="return me(event)" onkeyup="recalculation(<?=$row['id']?>)">
+                <div class="arrow">
+                    <div id="arrow-top" class="arrow-top"></div>
+                    <div id="arrow-bottom" class="arrow-bottom"></div>
+                </div>
+            </div>
+        </td>
+        <td class="order-price" id="price<?=$row['id']?>"><?=$row['group_price']?></td>
+        <td class="order-price" id="summ<?=$row['id']?>"><?=$row['summa']?></td>
+        <td>
+            <b style="cursor: pointer" onclick="ajaxRemoveProductInCart(<?=$row["id"];?>)"
+               title="<?=$multi['TXT_KILL_PROP'].' '.$name?>">
+                <img src="/images/design/order-remove.png" alt="">
+            </b>
+        </td>
+    </tr><?
+}?>
+</table>
+<script>
+    $('.arrow-top').click(function() {
+        var valueCount = parseInt($(this).parent().parent().children('input').val());
+        valueCount++;
+        $(this).parent().parent().children('input').val(valueCount);
+        var idCount = parseInt($(this).parent().parent().children('input').data('c'));
+        //console.log('arr-top clicked');
+        recalculation(idCount);
+    });
+    $('.arrow-bottom').click(function() {
+        var valueCount = parseInt($(this).parent().parent().children('input').val());
+        if(valueCount>1) {
+            valueCount--;
+            $(this).parent().parent().children('input').val(valueCount);
+            var idCount = parseInt($(this).parent().parent().children('input').data('c'));
+            recalculation(idCount);
+        }
+    });
+    remove_prop_descr_scroll( '.full-cart-tbl' );
+</script>
+<?

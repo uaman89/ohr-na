@@ -1,0 +1,24 @@
+User-agent: *
+Disallow:  /cgi-bin/
+Disallow:  /admin/
+Disallow:  /modules/
+Disallow:  /order/
+Disallow:  /order.php
+Disallow:  /comparison/
+Disallow:  /registration/
+Disallow:  /feedback_ajax/
+Disallow:  /page*
+Disallow:  /prosteyshie-signalizatsii/page*/
+Disallow:  /sireny/page*/
+Disallow:  /mod_catalog_prod_files/
+Disallow:  /index.php
+Disallow:  /catalog/novinki/
+Disallow:  /catalog/share/
+Disallow:  /*?parcod_*
+Disallow:  /images/mod_catalog_prod_files/24529/hit.pdf
+Disallow:  /images/mod_catalog_prod_files/24553/GSM%20mini.pdf
+Sitemap: http:/ohrana.ua/sitemap.xml
+
+
+User-agent: Yandex
+Host: ohrana.ua

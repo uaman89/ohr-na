@@ -1,0 +1,581 @@
+<?php /* user.php */
+// ================================================================================================
+// System : SEOCMS
+// Module : user.php
+// Version : 1.0.0
+// Date : 10.01.2006
+// Licensed To:
+// Igor Trokhymchuk ihoru@mail.ru
+// Andriy Lykhodid las_zt@mail.ru
+//
+// Purpose : script for all actions with External users on the front-end
+//
+// ================================================================================================
+if (!defined("SITE_PATH")) define("SITE_PATH", $_SERVER['DOCUMENT_ROOT']);
+include_once(SITE_PATH . '/modules/mod_user/userShow.class.php');
+include_once(SITE_PATH . '/modules/mod_user/userBlogLayout.class.php');
+
+
+if (!defined("_LANG_ID")) {
+    $pg = new PageUser();
+}
+
+//------------------ Authorization settings -------------------------
+if (!isset($logon)) $logon = new  UserAuthorize();
+//-------------------------------------------------------------------
+
+$Msg = new ShowMsg();
+$Msg->SetShowTable(TblModUserSprTxt);
+$User = new UserShow($logon->session_id, $logon->user_id);
+if (empty($Blog)) $Blog = Singleton::getInstance('userBlogLayout');
+//$Blog = new userBlogLayout($logon->session_id,$logon->user_id);
+if (!isset($whattodo)) $whattodo = NULL;
+
+//comments
+if (isset($_REQUEST['task'])) {
+    if ($_REQUEST['task'] == 'reg'
+        OR $_REQUEST['task'] == 'save_reg_data'
+        OR $_REQUEST['task'] == 'makelogon'
+        OR $_REQUEST['task'] == 'not_activated'
+        OR $_REQUEST['task'] == 'not_user'
+        OR $_REQUEST['task'] == 'upgrade_account'
+        OR $_REQUEST['task'] == 'upgrade_account_save'
+        OR $_REQUEST['task'] == 'show_profile'
+        OR $_REQUEST['task'] == 'forgotpass'
+        OR $_REQUEST['task'] == 'send_pass'
+        OR $_REQUEST['task'] == 'profile'
+        OR $_REQUEST['task'] == 'update'
+        OR $_REQUEST['task'] == 'up_img'
+        OR $_REQUEST['task'] == 'down_img'
+        OR $_REQUEST['task'] == 'del_img'
+        OR $_REQUEST['task'] == 'edit_email_pass'
+        OR $_REQUEST['task'] == 'set_new_email_pass'
+        OR $_REQUEST['task'] == 'quick_search_form'
+        OR $_REQUEST['task'] == 'quick_search'
+        OR $_REQUEST['task'] == 'complex_search_form'
+        OR $_REQUEST['task'] == 'make_complex_search'
+        OR $_REQUEST['task'] == 'set_to_premium'
+        OR $_REQUEST['task'] == 'show_send_letter_form'
+        OR $_REQUEST['task'] == 'send_letter_to'
+        OR $_REQUEST['task'] == 'send_kiss_to'
+        OR $_REQUEST['task'] == 'show_send_photo_form'
+        OR $_REQUEST['task'] == 'send_photo_to'
+        OR $_REQUEST['task'] == 'show_box'
+        OR $_REQUEST['task'] == 'show_box_letters'
+        OR $_REQUEST['task'] == 'show_box_kisses'
+        OR $_REQUEST['task'] == 'show_box_photos'
+        OR $_REQUEST['task'] == 'show_box_letter_detail'
+        OR $_REQUEST['task'] == 'show_box_kiss_detail'
+        OR $_REQUEST['task'] == 'show_box_photo_detail'
+        OR $_REQUEST['task'] == 'set_deleted_box_letter'
+        OR $_REQUEST['task'] == 'set_deleted_box_letters_arr'
+        OR $_REQUEST['task'] == 'show_my_favorites'
+        OR $_REQUEST['task'] == 'add_my_favorite'
+        OR $_REQUEST['task'] == 'del_my_favorite'
+        OR $_REQUEST['task'] == 'show_letters_chat'
+        OR $_REQUEST['task'] == 'login_checkup'
+        OR $_REQUEST['task'] == 'addImage'
+        OR $_REQUEST['task'] == 'deleteImage'
+        OR $_REQUEST['task'] == 'userBlog'
+        OR $_REQUEST['task'] == 'saveNewBlogRecord'
+        OR $_REQUEST['task'] == 'userBlogEditRecord'
+        OR $_REQUEST['task'] == 'userBlogAbout'
+        OR $_REQUEST['task'] == 'userBlogShow'
+        OR $_REQUEST['task'] == 'userBlogShowAll'
+        OR $_REQUEST['task'] == 'userBlogEntry'
+        OR $_REQUEST['task'] == 'showAllBlogs'
+        OR $_REQUEST['task'] == 'showAllExperts'
+        OR $_REQUEST['task'] == 'chek'
+        OR $_REQUEST['task'] == 'comments'
+        OR $_REQUEST['task'] == 'deleteBlog'
+    )
+        $task = $_REQUEST['task'];
+    else $task = 'makelogon';
+}
+//echo '<br>$task='.$task.' $_REQUEST[task]='.$_REQUEST['task'];
+if (!isset($task) or $task == NULL) $task = 'makelogon';
+if (!empty($logon->Err)) $task = 'makelogon';
+//echo '<br>$task='.$task;
+if (!$logon->user_id
+    AND $task != 'reg'
+    AND $task != 'save_reg_data'
+    AND $task != 'forgotpass'
+    AND $task != 'send_pass'
+    AND $task != 'not_activated'
+    AND $task != 'not_user'
+    AND $task != 'show_profile'
+    AND $task != 'quick_search_form'
+    AND $task != 'quick_search'
+    AND $task != 'upgrade_account_save'
+    AND $task != 'login_checkup'
+    AND $task != 'addImage'
+    AND $task != 'deleteImage'
+    AND $task != 'userBlog'
+    AND $task != 'chek'
+    AND $task != 'saveNewBlogRecord'
+    AND $task != 'userBlogAbout'
+    AND $task != 'userBlogShowAll'
+    AND $task != 'userBlogShow'
+    AND $task != 'userBlogEditRecord'
+    AND $task != 'userBlogEntry'
+    AND $task != 'showAllBlogs'
+    AND $task != 'showAllExperts'
+    AND $task != 'deleteBlog'
+) $task = 'makelogon';
+//echo '<br>$task='.$task;
+
+//echo '<br> whattodo='.$whattodo;
+if ($whattodo == '1') $task = 'reg';
+
+if (isset($_REQUEST['save_reg_data'])) $task = 'save_reg_data';
+if (isset($_REQUEST['update'])) $task = 'update';
+if (isset($_REQUEST['send_pass'])) $task = 'send_pass';
+if (isset($_REQUEST['set_new_pass'])) $task = 'set_new_pass';
+
+if (!isset($_REQUEST['sort'])) $sort = NULL;
+else $sort = $_REQUEST['sort'];
+
+if (!isset($_REQUEST['start'])) $start = 0;
+else $start = $_REQUEST['start'];
+
+if (!isset($_REQUEST['display'])) $display = 20;
+else $display = $_REQUEST['display'];
+
+if (!isset($_REQUEST['start'])) $Blog->start = 0;
+else $Blog->start = $Blog->Form->GetRequestNumData($_REQUEST['start']);
+
+if (!isset($_REQUEST['display'])) $Blog->display = 4;
+else $Blog->display = $Blog->Form->GetRequestNumData($_REQUEST['display']);
+
+if (!isset($_REQUEST['page'])) $Blog->page = 1;
+else $Blog->page = $Blog->Form->GetRequestTxtData($_REQUEST['page'], 1);
+if ($Blog->page > 1) $Blog->start = ($Blog->page - 1) * $Blog->display;
+if ($Blog->page == 'all') {
+    $Blog->start = 0;
+    $Blog->display = 999999;
+}
+
+
+if (!isset($_REQUEST['login'])) $login = NULL;
+else $login = $_REQUEST['login'];
+
+if (!isset($_REQUEST['alias'])) $alias = NULL;
+else  $alias = $_REQUEST['alias'];
+
+if (!isset($_REQUEST['id'])) $id = NULL;
+else $id = $_REQUEST['id'];
+
+if (!isset($_REQUEST['activate_user'])) $activate_user = NULL;
+else  $activate_user = $_REQUEST['activate_user'];
+
+if (!isset($_REQUEST['name'])) $name = NULL;
+else  $name = $_REQUEST['name'];
+
+if (!isset($_REQUEST['country'])) $country = NULL;
+else  $country = $_REQUEST['country'];
+
+if (!isset($_REQUEST['adr'])) $adr = NULL;
+else  $adr = $_REQUEST['adr'];
+
+if (!isset($_REQUEST['city'])) $city = NULL;
+else  $city = $_REQUEST['city'];
+
+if (!isset($_REQUEST['phone'])) $phone = NULL;
+else  $phone = $_REQUEST['phone'];
+
+if (!isset($_REQUEST['letter'])) $letter = NULL;
+else  $letter = $_REQUEST['letter'];
+
+if (!isset($_REQUEST['phone_mob'])) $phone_mob = NULL;
+else  $phone_mob = $_REQUEST['phone_mob'];
+
+if (!isset($_REQUEST['fax'])) $fax = NULL;
+else  $fax = $_REQUEST['fax'];
+
+if (!isset($_REQUEST['www'])) $www = NULL;
+else  $www = $_REQUEST['www'];
+
+if (!isset($_REQUEST['state'])) $state = "m";
+else  $state = $_REQUEST['state'];
+
+if (isset($_REQUEST['subscr']) AND $_REQUEST['subscr'] != '0') $subscr = 1;
+else $subscr = 0;
+
+if (!isset($_REQUEST['old_email'])) $old_email = NULL;
+else  $old_email = $_REQUEST['old_email'];
+
+if (!isset($_REQUEST['email'])) $email = NULL;
+else  $email = $_REQUEST['email'];
+
+if (!isset($_REQUEST['email2'])) $email2 = NULL;
+else  $email2 = $_REQUEST['email2'];
+
+if (!isset($_REQUEST['oldpass'])) $oldpass = NULL;
+else  $oldpass = $_REQUEST['oldpass'];
+
+if (!isset($_REQUEST['password'])) $password = NULL;
+else  $password = $_REQUEST['password'];
+
+if (!isset($_REQUEST['password2'])) $password2 = NULL;
+else  $password2 = $_REQUEST['password2'];
+
+if (!isset($_REQUEST['check_up'])) $check_up = NULL;
+else $check_up = $_REQUEST['check_up'];
+
+if (!isset($_REQUEST['wichField'])) $wichField = NULL;
+else $wichField = $_REQUEST['wichField'];
+
+if (!isset($_REQUEST['val'])) $val = NULL;
+else $val = $_REQUEST['val'];
+
+if (!isset($_REQUEST['day'])) $day = NULL;
+else $day = $_REQUEST['day'];
+
+if (!isset($_REQUEST['month'])) $month = NULL;
+else $month = $_REQUEST['month'];
+
+if (!isset($_REQUEST['year'])) $year = NULL;
+else $year = $_REQUEST['year'];
+
+if (!isset($_REQUEST['bonuses'])) $bonuses = NULL;
+else $bonuses = $_REQUEST['bonuses'];
+
+if (!isset($_REQUEST['userImage'])) $userAvatar = NULL;
+else $userAvatar = $_REQUEST['userImage'];
+
+if (!isset($_REQUEST['headerBlog'])) $headerBlog = NULL;
+else $headerBlog = $_REQUEST['headerBlog'];
+
+if (!isset($_REQUEST['blogContent'])) $blogContent = NULL;
+else $blogContent = $_REQUEST['blogContent'];
+
+if (!isset($_REQUEST['recordId'])) $recordId = NULL;
+else $recordId = $_REQUEST['recordId'];
+
+if (!isset($_REQUEST['userId'])) $userId = NULL;
+else $userId = $_REQUEST['userId'];
+
+if (!isset($_REQUEST['aboutMe'])) $aboutMe = NULL;
+else $aboutMe = $_REQUEST['aboutMe'];
+
+if (!isset($_REQUEST['wichForm'])) $wichForm = NULL;
+else $wichForm = $_REQUEST['wichForm'];
+
+if (!isset($_REQUEST['expertImg'])) $expertImg = NULL;
+else $expertImg = $_REQUEST['expertImg'];
+
+if (!isset($_REQUEST['idOfDelete'])) $idOfDelete = NULL;
+else $idOfDelete = $_REQUEST['idOfDelete'];
+
+
+$User->task = $task;
+$User->val = $val;
+
+$User->wichField = $wichField;
+$User->sort = $sort;
+$User->start = $start;
+$User->display = $display;
+$User->aboutMe = $aboutMe;
+$Blog->headerBlog = $headerBlog;
+$Blog->blogContent = $blogContent;
+$Blog->recordId = $recordId;
+$Blog->userId = $userId;
+$Blog->idOfDelete = $idOfDelete;
+
+$User->userAvatar = addslashes(strip_tags(trim($userAvatar)));
+$User->expertImg = addslashes(strip_tags(trim($expertImg)));
+
+$User->id = $id;
+$User->name = addslashes(strip_tags(trim($name)));
+$User->state = addslashes(strip_tags(trim($state)));
+$User->country = addslashes(strip_tags(trim($country)));
+$User->adr = addslashes(strip_tags(trim($adr)));
+
+$User->year = addslashes(strip_tags(trim($year)));
+$User->month = addslashes(strip_tags(trim($month)));
+$User->day = addslashes(strip_tags(trim($day)));
+
+$User->city = addslashes(strip_tags(trim($year . $month . $day)));
+$User->phone = addslashes(strip_tags(trim($phone)));
+$User->phone_mob = addslashes(strip_tags(trim($phone_mob)));
+$User->fax = addslashes(strip_tags(trim($fax)));
+$User->www = addslashes(strip_tags(trim($www)));
+$User->subscr = addslashes(strip_tags(trim($subscr)));
+$User->user_status = 2;
+$User->bonuses = addslashes(strip_tags(trim($bonuses)));
+$User->old_email = $old_email;
+$User->login = addslashes(strip_tags(trim($login)));
+$User->email = addslashes(strip_tags(trim($email)));
+$User->alias = addslashes(strip_tags(trim($alias)));
+$Blog->letter = $letter;
+
+$User->oldpass = $oldpass;
+$User->password = $password;
+$User->password2 = $password2;
+//echo "login=".$User->login." ".$User->password." ".$User->city." ".$User->email;
+$User->whattodo = $whattodo;
+//echo '<br>$referer_page='.$referer_page;
+if (isset($_REQUEST['referer_page'])) $User->referer_page = $_REQUEST['referer_page'];
+else {
+    if (strstr($_SERVER['REQUEST_URI'], 'referer_page=')) {
+        $start = strpos($_SERVER['REQUEST_URI'], 'referer_page=');
+        $User->referer_page = substr($_SERVER['REQUEST_URI'], ($start + strlen('referer_page=')));
+    } elseif (isset($_SERVER["HTTP_REFERER"])) $User->referer_page = $_SERVER["HTTP_REFERER"];
+    else $User->referer_page = NULL;
+}
+$User->referer_page = str_replace('AND', '&', $User->referer_page);
+//echo '<br/>$User->referer_page='.$User->referer_page;
+
+if (isset($Page->Catalog)) $Catalog = & $Page->Catalog;
+else $Catalog = new CatalogLayout();
+$scriptact = $_SERVER['PHP_SELF'];
+$User->script = $_SERVER['PHP_SELF'] . "?task=$User->task&amp;display=$User->display&amp;start=$User->start&amp;sort=$User->sort";
+//echo '<br>$User->script='.$User->script;
+
+//echo '<br> $User->task='.$User->task.' $login='.$login;die;
+$Page->left = 1;
+$ModulesPlug = new ModulesPlug();
+$id_module = $ModulesPlug->GetModuleIdByPath('/modules/mod_user/user.backend.php');
+$Blog->module = $id_module;
+
+switch ($User->task) {
+    case 'makelogon':
+        $User->Err = $logon->Err;
+        // echo "<script>window.location.href='"._LINK."';</script>";
+        $User->LoginPage();
+        /*echo '<script>window.location.href="'.$go_to_page.'"</script>';*/
+        break;
+    case 'reg':
+        if ($logon->user_id) {
+            ?>
+            <h1 class="bgrnd"><?= $User->Msg->show_text('TXT_TITLE_REGISTRATION_PAGE'); ?></h1>
+            <div class="body">
+                <? echo "<script>window.location.href='" . _LINK . "myaccount/';</script>"; ?>
+                <? $User->Form->ShowTextMessages($User->Msg->show_text('MSG_USER_IS_LOGGED_ON')); ?>
+                <div align="center"><a href="<?= _LINK; ?>myaccount/"
+                                       class="ch1"><?= $logon->multi['_TXT_YOUR_PROFILE']; ?></a></div>
+            </div>
+        <?
+        } else {
+
+                $User->showRegJS();
+
+            $User->ShowRegForm();
+        }
+        break;
+    case 'login_checkup':
+
+        if (empty($User->email)) {
+            ?><span
+                style="font-size:9px; color:red;"><?= $User->Msg->show_text('_EMPTY_LOGIN_FIELD', TblSysMsg); ?></span><?
+            return false;
+        }
+
+        if ($User->old_email != $User->email OR $check_up) {
+            if (!$User->unique_login($User->email)) {
+                ?><span
+                    style="font-size:9px; color:red;"><?= $User->Msg->show_text('MSG_LOGIN_EXIST', TblSysMsg); ?></span><?
+            } else {
+                ?><span
+                    style="font-size:9px; color:green;"><?= $User->Msg->show_text('MSG_LOGIN_FREE', TblSysMsg); ?></span><?
+            }
+        }
+        break;
+    case 'save_reg_data':
+        if ($logon->user_id) {
+            ?>
+            <div class="body">
+                <? echo "<script>window.location.href='" . _LINK . "';</script>"; ?>
+
+            </div>
+            <?
+            return false;
+        }
+
+        $User->CheckInputData('inputData');
+
+        if( !empty( $User->errorMsg) ) {
+            $data = array('error'=>$User->errorMsg );
+            exit( json_encode($data));
+
+        }
+
+        $User->CheckPsw();
+
+        if( !empty( $User->errorMsg) ) {
+            $data = array('error'=>$User->errorMsg );
+            exit( json_encode($data));
+
+        }
+
+        $User->login = $User->email;
+
+        if ($User->CheckFields() != NULL) {
+            $data = array('error'=>$User->Err );
+            exit( json_encode($data));
+        }
+        $User->user_id = $User->SaveToSysUser();
+        if ($User->user_id) {
+            $res = $User->SaveUser();
+            if ($res) {
+                $err = "";
+
+                if (!empty($err)) {
+                    $data = array('error'=>$err );
+                    exit( json_encode($data));
+
+                }
+                if (empty($resImg)) {
+                    if ($User->user_status == 2) {
+                        $User->SetActivateCode($User->login);
+                    }
+
+                    $res = $User->SendHTML();
+                   // $User->ShowRegFinish($res);
+                    $logon->user_valid($User->login, $User->password, 1);
+                    //-------- For internet-shop ------------
+
+
+                }
+                $data = array('error'=>'' );
+                exit( json_encode($data));
+            } else {
+                $data = array('error'=>"Ошибка регистрации" );
+                exit( json_encode($data));
+            }
+        } else {
+            // echo '<br/>Error registration';
+        }
+        break;
+    case 'not_activated':
+        $User->ShowTextMessages($Msg->show_text('MSG_YOU_ARE_NOT_ACTIVATED'));
+        break;
+    case 'not_user':
+        $User->ShowTextMessages($Msg->show_text('MSG_YOU_ARE_NOT_USER'));
+        break;
+    /*---------------- Forgot Password ------------------*/
+    case 'forgotpass':
+        $User->ForgotPass();
+        break;
+    case 'send_pass':
+        if ($User->CheckEmailFields('forgotpass') != NULL) {
+            $User->ForgotPass();
+            return false;
+        }
+        if ($User->unique_email($User->email)) {
+            // if it is needed to encode password then set new password, else just get current password
+            if ($User->IsEncodePass($User->email)) $User->SetNewPass($User->email);
+            else $User->password = $User->GetUserPassword($User->email);
+            if (!$User->SendNewPass()) {
+                $User->Err = $Msg->show_text('MSG_NEW_PASS_NOT_SENT');
+                $User->LoginPage();
+                return false;
+            }
+        } else {
+            $User->Err = "Користувач з такою електронною поштою не зареєстрованый.";
+            $User->LoginPage();
+            return false;
+        }
+        $User->TextMessages = $Msg->show_text('MSG_NEW_PASS_SENT_OK');
+        $User->LoginPage();
+        break;
+    /*---------------- Profile --------------------*/
+    case 'profile':
+        if ($logon->session_id == NULL OR empty($logon->login))
+            echo "<script language='JavaScript'>window.location.href='$scriptact';</script>";
+        //echo 'EditProfile';
+        $User->id = $User->GetUserIdByEmail($logon->login);
+        $User->Show_JS();
+        $User->EditProfile();
+        break;
+
+    case 'comments':
+        if ($logon->session_id == NULL OR empty($logon->login))
+            echo "<script language='JavaScript'>window.location.href='$scriptact';</script>";
+        //echo 'EditProfile';
+        $User->id = $User->GetUserIdByEmail($logon->login);
+        $User->Show_JS();
+        $User->ShowCommentsBlock();
+        break;
+
+
+    case 'update':
+        if ($logon->session_id == NULL OR empty($logon->login)) echo "<script language='JavaScript'>window.location.href='$scriptact';</script>";
+        // check fields in editing.
+        // give parameter $logon->user_id - it means editing of the profile, not creating new one.
+        $User->user_id = $logon->user_id;
+        $User->CheckInputData('updateData');
+
+        if( !empty( $User->errorMsg) ) {
+            $data = array('error'=>$User->errorMsg );
+            exit( json_encode($data));
+
+        }
+
+
+        if ($User->SaveUser()) {
+
+            $data = array('error'=>'' );
+            exit( json_encode($data));
+        }
+        break;
+    /*-------------- Change Password -----------------*/
+    case 'edit_email_pass':
+        if ($logon->session_id == NULL OR empty($logon->login))
+            echo "<script language='JavaScript'>window.location.href='$scriptact';</script>";
+        $User->ShowChangeEmailPass();
+        break;
+
+    case 'set_new_email_pass':
+
+        if ($logon->session_id == NULL OR empty($logon->login))
+            echo "<script language='JavaScript'>window.location.href='$scriptact';</script>";
+
+        if (!$User->CheckPassword($logon->login, $User->oldpass)) {
+            $User->Err = $User->Err . $User->Msg->show_text('MSG_INCORRECT_OLD_PASSWORD') . '<br>';
+            $User->ShowChangeEmailPass();
+            return false;
+        }
+
+        if (!empty($User->password) and !empty($User->password2)) {
+            if ($User->CheckPassFields($logon->login) != NULL) {
+                $User->ShowChangeEmailPass();
+                return false;
+            }
+        }
+
+
+        // change password for user with new login $User->email
+        if (!empty($User->password) and !empty($User->password2)) {
+            if ($User->change_pass($logon->login, $User->password))
+                $User->TextMessages = $User->TextMessages . $Msg->show_text('MSG_PASSWORD_CHANGE_OK') . '<br>';
+            else
+                $User->TextMessages = $User->TextMessages . $Msg->show_text('MSG_PASSWORD_NOT_CHANGE') . '<br>';
+        }
+        //$logon->logout();
+
+        if (empty($User->password)) $password = $User->oldpass;
+        else $password = $User->password;
+        //echo '<br>$logon->login='.$logon->login;
+        $logon->user_valid($logon->login, $password);
+        //echo '<br>$User->$Logon->login='.$User->$Logon->login;
+        echo "<script language='JavaScript'>window.location.href='" . _LINK . "myaccount/';</script>";
+        //$User->id = $User->id_user;
+        //$User->EditProfile();
+        break;
+    /*---------------- Show another Profile --------------------*/
+    case 'chek':
+        $User->checkAjaxFields();
+        break;
+    case 'show_profile':
+        //echo '<br>$logon->session_id='.$logon->session_id.' $logon->login='.$logon->login;
+        //if ( $logon->session_id==NULL OR empty($logon->login) ) echo "<script language='JavaScript'>window.location.href='$scriptact';</script>";
+        if ($User->profile == $User->id_user) $User->ShowMyProfile();
+        else $User->ShowProfile();
+        break;
+    default:
+        $User->LoginPage();
+        break;
+}
+
+?>

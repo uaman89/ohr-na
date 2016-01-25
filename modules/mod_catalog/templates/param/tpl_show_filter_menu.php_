@@ -1,0 +1,19 @@
+<?php
+?><div class="menu-filter"><?
+
+?>
+
+        <!--        <div class="filter-select-block">--><?//=$strSel;?><!--</div>-->
+        <div class="img-cat">
+           <?if(isset($imgSmall)):?>
+               <img src="<?=$imgSmall?>" alt>
+               <a class="all-prop" href="<?=$link?>">Смотреть все</a>
+            <?endif;?>
+        </div>
+        <div class="filter-block-all-param"><?=$str;?>
+
+
+        </div>
+
+    <?
+?></div><?

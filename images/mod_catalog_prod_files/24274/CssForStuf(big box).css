@@ -1,0 +1,111 @@
+.main_logotop{
+    padding-left: 230px;
+    padding-right:230px;
+    text-align: center;
+    vertical-align: middle;
+    display:table-cell;
+    width: 900px;
+    height: 250px;
+    background: url("/images/zagbig.png");
+    position: relative;
+    z-index: 1;
+}
+.month_but{
+    text-transform: uppercase;
+    text-align:center;
+    display: inline-block;
+    padding-top: 50px;
+    padding-bottom: 3px;
+    background-color:rgb(255,221,14);
+    color:black;
+    text-decoration: none;
+    border-radius: 0.7em;
+    position: relative;
+    margin-right:10px;
+    width:100px;
+    font-size: 16px;
+}
+.bigbox{
+    width:415px;
+    height:350px;
+    float:left;
+}
+.descrBigBox{
+    width:500px;
+    height:350px;
+    float:right;
+}
+.descr{
+    margin-left: 20px;
+    margin-top: 50px;
+    margin-right: 20px;
+    background: url("/images/line.png") no-repeat left top, url("/images/line.png") no-repeat left bottom;
+}
+.titled{
+    color:black;
+    font-family: 'Poiret One';
+    font-size: 32px;
+    text-transform: uppercase;
+    padding-top: 32px;
+    padding-bottom: 32px;
+}
+.descrd{
+    padding-bottom: 32px;
+    color:black;
+    font-family: 'Poiret One';
+    font-size: 16px;
+}
+.descrblok{
+    width:940px;
+    height:350px;
+    padding-bottom: 50px;
+}
+.dark{
+    background-color:rgb(165,168,171);
+}
+.month_but:last-child{
+    margin-right:0;
+}
+.logo_month{
+    margin-top:-40px ;
+    left:360px;
+    vertical-align: middle;
+    text-align: center;
+}
+.main_logotop span{
+    color:white;
+    font-family: 'Poiret One';
+    font-size: 17px;
+    margin: 0 auto;
+}
+.main_logo p, .main_logotop p{
+    text-transform: uppercase;
+    color:white;
+    font-family: 'Poiret One';
+    font-size: 2em;
+    font-weight: 100;
+    letter-spacing:4px;
+    margin: 0 auto;
+}
+.main_logotop p{
+    font-size: 41px;
+}
+.reg_but{
+    text-transform: uppercase;
+    text-align:center;
+    display: inline-block;
+    padding-top: 8px;
+    padding-right: 30px;
+    padding-bottom: 8px;
+    padding-left: 30px;
+    letter-spacing: 1.5px;
+    background-color:rgb(255,221,14);
+    color:black;
+    text-decoration: none;
+    border-radius: 0.7em;
+}
+.reg_button{
+    font: 16px 'Poiret One';
+    padding-top:15px;
+    padding-bottom:15px;
+}

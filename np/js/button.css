@@ -1,0 +1,58 @@
+.ui-autocomplete {
+    max-height: 150px;
+    width: 660px;
+    background: white;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+
+    border: 1px solid #AAAAAA;
+    box-shadow: 0px 2px 7px 0px rgba(0,0,0,0.45);
+    padding: 5px 0;
+}
+/* IE 6 doesn't support max-height
+ * we use height instead, but this forces the menu to always be this tall
+ */
+* html .ui-autocomplete {
+    height: 150px;
+}
+
+.ui-widget-content a {
+    color: #333333;
+    width: 100%;
+    font-size: 13px;
+    padding: 0px 4px 4px;
+    margin: 0 2px;
+    display: block;
+    min-height: 20px;
+    line-height: 13px;
+    cursor: pointer;
+}
+
+.ui-state-focus{
+    background-color: #25BEA0;
+    color: white!important;
+    display: block;
+    width: 100%;
+}
+.gmap-btn {
+    border: none;
+    cursor: pointer;
+    clear:both;
+    background-image: url("/np/js/maps.png");
+    background-repeat: no-repeat;
+    width:17px;
+    height:17px;
+    vertical-align:middle;
+    z-index:9999;
+    margin-top: 0!important;
+}
+.button_np{
+    float: right;
+    color: #039a9a;
+}
+.ui-helper-hidden-accessible{ display: none }
+
+.item-form input[type=text], .item-form select, .item-form textarea{
+    margin-top: 5px;
+}

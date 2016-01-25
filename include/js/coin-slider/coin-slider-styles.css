@@ -1,0 +1,113 @@
+/*
+Coin Slider jQuery plugin CSS styles
+http://workshop.rs/projects/coin-slider
+*/
+
+.slider {
+    background: url('/images/design/slider/slider.jpg') no-repeat center center;
+    height: 399px;
+    overflow: hidden;
+}
+
+
+/* оформление для контейнера(родного) и ссылки на слайде */
+#sliderContainer {
+    position:relative;
+    width:723px;
+    height:392px;
+}
+
+.coin-slider {
+    zoom:1;
+    position:relative;
+}
+
+.coin-slider a {
+    text-decoration:none;
+    outline:none;
+    border:none;
+}
+
+/* оформление блока навигации, пунктов (в том числе активного) */
+.cs-buttons {
+    width: 120px;
+    height: 16px;
+    font-size:0;
+    margin-top:-30px;
+    z-index: 1;
+    left: 590px!important;
+    overflow: hidden;
+}
+
+.cs-buttons a {
+    margin-left:8px;
+    height:16px;
+    width:16px;
+    float:left;
+    background:url(/images/design/slider/nav.png) no-repeat;
+    text-indent:-1000px;
+    display:block;
+}
+
+.cs-buttons a.cs-active {
+    background:url(/images/design/slider/nav2.png) no-repeat;
+}
+
+/* оформление блока описания, кнопок prev и next */
+.cs-title {
+    background:url(/images/design/slider/sliderTitle.png) repeat;
+    left:750px!important;
+    top:16px;
+    width: 185px;
+    height: 299px;
+    color:#fff;
+    line-height: 28px;
+    text-align: center;
+    padding: 30px 20px;
+    border:2px solid #fa6604;
+    border-radius: 3px;
+    text-shadow: 1px 1px 1px #062a6d;
+}
+
+.titleSlider {
+    font-size: 17px;
+    display: block;
+    margin-bottom: 30px;
+}
+
+
+.priceSlider {}
+
+.cs-title .descr {
+    display: block;
+    font-size: 19px;
+}
+
+.cs-title .descr a {
+    font-size: 12px;
+    text-decoration: underline;
+}
+
+.cs-title .descr a:hover {
+    text-decoration:underline;
+}
+
+.cs-prev {
+    background:url(/images/design/slider/Arrows.png) left top no-repeat;
+    color:transparent;
+    width:43px;
+    height:43px;
+    margin-left:10px;
+}
+
+.cs-next {
+    background:url(/images/design/slider/Arrows.png) right top no-repeat;
+    color:transparent;
+    width:43px;
+    height:43px;
+    margin-right:10px;
+}
+
+.cs-prev:hover,.cs-next:hover {
+    color:transparent;
+}

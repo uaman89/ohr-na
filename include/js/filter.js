@@ -1,0 +1,208 @@
+/**
+ * Created with JetBrains PhpStorm.
+ * User: bogdan
+ * Date: 22.07.13
+ * Time: 17:34
+ * To change this template use File | Settings | File Templates.
+ */
+
+//function getValueUsingClass( element ){
+//
+//
+//
+//
+//
+//
+//    var hrefData = [];
+//    var nameInput ;
+//    var valueInput;
+//    var href= '?';
+//
+//    element.children('.paramBlock').each(
+//        function() {
+//            $("input[type=checkbox]:checked", this).each(
+//               function(){
+//
+//                   nameInput = $(this).attr('name');
+//                   valueInput = $(this).val();
+//
+//                   if(hrefData[nameInput] == undefined){
+//                       hrefData[nameInput] = valueInput;
+//                   }else{
+//                       hrefData[nameInput] =  hrefData[nameInput] + ',' + valueInput;
+//                   }
+//
+//               }
+//
+//            );
+//
+//        }
+//
+//
+//    );
+//
+//
+//
+//    for (var key in hrefData){
+//        href += key+'='+hrefData[key]+'&';
+//    }
+//
+//    var linkCategory = element.parent().children('.img-cat').children('a').attr('href');
+//
+//   location.href = linkCategory+href;
+//
+//
+//
+//
+//}
+
+    function gelPropConetnt(linkCat,linkParam, menu, linkItem){
+
+    //alert('linkCat='+linkCat+' linkParam='+linkParam); //return false;
+    menu = menu || false;
+
+    linkItem = linkItem || false;
+
+    if(linkParam.length != 0){
+        location.hash = linkParam;
+    }else{
+        location.hash = 'kill';
+    }
+
+    if(menu == true && window.location.pathname!= linkCat) {
+        linkParam = "?"+linkItem;
+    }
+
+    if ( window.location.toString().indexOf("novinki") > 0 ) no_filter = true;
+    else no_filter = false;
+
+    $.ajax({
+        type: "POST",
+        url: linkCat + linkParam,
+        success: function(msg){
+            //alert('linkCat='+linkCat+' linkParam='+linkParam);
+            $("#my_d_basket").html( msg );
+            $("#reloadOrder").hide();
+            if (no_filter == false)
+                showFilter(linkCat,linkParam, menu);
+            window.scrollTo(0, 0);
+        },
+        beforeSend : function(){
+            $("#reloadOrder").show();
+            $('#showFilterReload').show();
+        }
+    });
+    return false;
+}
+
+function showFilter(linkCat,linkParam, menu){
+
+    menu = menu || false;
+    if(linkParam.length != 0){
+        location.hash = linkParam;
+    }
+    else{
+        location.hash = 'kill';
+    }
+    //alert(linkParam[0]);
+    if(linkParam.length>1){
+        if(linkParam[linkParam.length-1]!='/'){
+            linkParam += '&';
+        }else{
+            linkParam += '?';
+        }
+    }else{
+        linkParam = '?';
+    }
+    if(menu==true){
+        window.location = "http://"+window.location.host+linkCat + linkParam;
+    }else{
+        var link_url = linkCat + linkParam+'onlyFilter=1'
+        $.ajax({
+            type: "POST",
+            url: link_url,
+            success: function(msg){
+                //alert(msg);
+                $("#showFilterReload").hide();
+                $("#showFilterHtml").html( msg );
+            }
+        });
+    }
+}
+
+function gelPropConetntByTypeParam5(linkCat,linkParam,id){
+    var val = $('#'+id).val();
+    if(val!=''){
+        if(linkParam.length>0){
+            linkParam = linkParam + '&';
+        }else{
+            linkParam = linkParam + '?';
+        }
+        linkParam = linkParam +  id + '=' + val;
+        //    alert(linkParam);
+        gelPropConetnt(linkCat,linkParam);
+    }else{
+        alert('Введите корректное значение!');
+    }
+    return false;
+}
+
+function gelPropConetntByTypeParam1(linkCat,linkParam,id){
+    var val0 = $('#'+id+'_0').val();
+    var val1 = $('#'+id+'_1').val();
+
+//    alert('val0=' + val0 + 'val1=' + val1);
+    if(val0=='' || val1==''){
+        showErr();
+        return false;
+    }
+
+//    alert('parseFloat(val0)=' + parseFloat(val0) + 'parseFloat(val1)=' + parseFloat(val1));
+    if(parseFloat(val0) > parseFloat(val1)){
+        showErr();
+        return false;
+    }
+
+    if(linkParam.length>0){
+        linkParam = linkParam + '&';
+    }else{
+        linkParam = linkParam + '?';
+    }
+    linkParam = linkParam +  id + '=' + val0 + '|' + val1;
+    //    alert(linkParam);
+    gelPropConetnt(linkCat,linkParam);
+
+    return false;
+}
+
+function showErr(){
+    alert('Введите корректное значение!');
+}
+
+function gelPropConetntByPrice(linkCat,linkParam,id){
+    var val0 = $('#'+id+'_0').val();
+    var val1 = $('#'+id+'_1').val();
+
+    //alert('val0=' + val0 + 'val1=' + val1);
+    if(val0=='' || val1==''){
+        showErr();
+        return false;
+    }
+
+//    alert('parseFloat(val0)=' + parseFloat(val0) + 'parseFloat(val1)=' + parseFloat(val1));
+    if(parseFloat(val0) > parseFloat(val1)){
+        showErr();
+        return false;
+    }
+
+    if(linkParam.length>0){
+        linkParam = linkParam + '&';
+    }else{
+        linkParam = linkParam + '?';
+    }
+    linkParam = linkParam +  'from=' + val0 + '&to=' + val1;
+    //alert(linkParam);
+    gelPropConetnt(linkCat,linkParam);
+
+    return false;
+}
