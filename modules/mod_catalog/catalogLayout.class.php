@@ -448,7 +448,7 @@ function ShowMainCategories2($level){
                 }
 
                 $levelsShort = $this->ShowLevelsNameShort($this->treeCatLevels[$this->id_cat], 4);
-                $arr = $this->GetListPositionsSortByDate($this->id_cat, 'limit', $this->sort, $this->asc_desc, true, $this->id_param, '', '', $lable);
+                $arr = $this->GetListPositionsSortByDate($this->id_cat, 'limit', $this->sort, $this->asc_desc, true, $this->id_param, '', '');
                 //var_dump($arr); /*qwerty*/
                 $props = $this->ShowListOfContentByPages( $arr );
 
@@ -1114,28 +1114,29 @@ function ShowMainCategories2($level){
                         </div>
                     </div>
                 </div>
-            </div>
-            <? if (isset($row_img['0']['id'])) :?>
-                <div class="image_carousel">
-                    <div id="foo1" class="floatToLeft">
-                        <?
+                <? if (isset($row_img['0']['id'])) :?>
+                    <div class="image_carousel" style="float:left">
+                        <div id="foo1" class="floatToLeft">
+                            <?
 
-                        $counter = 0;
-                        for ($i = 0; $i < $cnt; $i++) {
+                            $counter = 0;
+                            for ($i = 0; $i < $cnt; $i++) {
 
-                            $path = "http://" . NAME_SERVER . $settings['img_path'] . "/" . $this->id . "/" . $row_img[$i]['path'];
-                            $alt = htmlspecialchars(stripslashes($row_img[$i]['alt']));
-                            $title = htmlspecialchars(stripslashes($row_img[$i]['title']));
-                            $counter++;
-                            ?><a class="marginRight3 floatToLeft marginTop8" data-id="<?=$i?>" title="<?= $name; ?>" target="_blank"><?= $this->ShowCurrentImage($row_img[$i]['path'], 'size_rect=88x69', 95, NULL, "alt='" . $alt . "' title='" . $title . "'", $this->id); ?></a><?
-                        } ?>
+                                $path = "http://" . NAME_SERVER . $settings['img_path'] . "/" . $this->id . "/" . $row_img[$i]['path'];
+                                $alt = htmlspecialchars(stripslashes($row_img[$i]['alt']));
+                                $title = htmlspecialchars(stripslashes($row_img[$i]['title']));
+                                $counter++;
+                                ?><a class="marginRight3 floatToLeft marginTop8" data-id="<?=$i?>" title="<?= $name; ?>" target="_blank"><?= $this->ShowCurrentImage($row_img[$i]['path'], 'size_rect=88x69', 95, NULL, "alt='" . $alt . "' title='" . $title . "'", $this->id); ?></a><?
+                            } ?>
+                        </div>
+                        <div class="clearfix"></div>
+                        <a class="prevP" id="foo1_prev" href="#"><span>prev</span></a>
+                        <a class="nextP" id="foo1_next" href="#"><span>next</span></a>
+
                     </div>
-                    <div class="clearfix"></div>
-                    <a class="prevP" id="foo1_prev" href="#"><span>prev</span></a>
-                    <a class="nextP" id="foo1_next" href="#"><span>next</span></a>
+                <?php endif;?>
+            </div>
 
-                </div>
-            <?php endif;?>
             <!--display image end-->
         </div>
         <?php

@@ -67,7 +67,7 @@ class CatalogLayout extends CatalogParamLayout
 
         $lg= check_init('UserAuthorize', 'UserAuthorize');
 
-        if( !isset($lg->user_type) || $lg->user_type<5) {
+        if( !isset($lg->user_type) || $lg->user_type<5 ) {
             $this->group_user_id = 5;
         }else{
             $this->group_user_id = $lg->user_type;
@@ -189,74 +189,55 @@ class CatalogLayout extends CatalogParamLayout
     // Reason for change : Creation
     // Change Request Nbr:
     // ================================================================================================
-    function ShowPathToLevel($level, $str = NULL, $make_link = NULL)
+    function ShowPathToLevel($level, $str = NULL, $make_link = NULL, $is_last_element = true)
     {
-        $devider = '/';
+        $devider = ' / ';
         if ($level > 0) {
-            $tmp_db = DBs::getInstance();
+            $use_micro_data = ($is_last_element) ? false : true;
+
+            //$tmp_db = DBs::getInstance();
             $row = $this->treeCatData[$level];
             //del
-
-
-
             if($level==397){
-
                 $row['name'] = str_replace("-", "", $row['name']);
-
             }
+
             $name = stripslashes($row['name']);
             $link = $this->getUrlByTranslit($row['path']);
 
             if (!empty($str)) {
-                $str = '<a href="' . $link . '">' . $name . '</a> ' . $devider . ' <span class="spanShareName">' . $str . "</span>";
-            } else {
+                $str = FrontendPages::getMicroFormPathItem( $name, $link, $use_micro_data ).$devider.$str;
+                //$str = '<a href="' . $link . '">' . $name . '</a>' . $devider . '<span class="spanShareName">' . $str . "</span>";
+            } 
+            else {
                 if ($make_link == 1) {
-                    $str = $this->getMicroFormPathItem($link, $name);
-                } else $str = $name;
+                    $str = FrontendPages::getMicroFormPathItem( $name, $link, $use_micro_data);
+                }
+                else
+                    $str = FrontendPages::getMicroFormPathItem( $name, null, $use_micro_data);
             }
-            if ($row['level'] > 0) {
-                return $this->ShowPathToLevel($row['level'], $str, $make_link = NULL);
-            }
-            //$str = '<a href="'.$script.'&level=0">'.$this->Msg->show_text('TXT_ROOT_CATEGORY').' > </a>'.$str;
-            $str = $this->getMicroFormPathItem(_LINK, $this->multi['TXT_FRONT_HOME_PAGE']) . ' ' . $devider .
-                $this->getMicroFormPathItem(_LINK . 'catalog/', $this->multi['TXT_CATALOG']) . '
-                ' . $devider . ' <span class="spanShareName">' . $str . "</span>";
 
-        } else {
-            $str = $this->getMicroFormPathItem(_LINK, $this->multi['TXT_FRONT_HOME_PAGE']) . ' ' . $devider . ' ' . $this->multi['TXT_CATALOG'] . '';
+
+            if ($row['level'] > 0) {
+                return $this->ShowPathToLevel($row['level'], $str, NULL, false); //here $make_link = NULL, $last_element_flag = false);
+            }
+
+
+            //$str = '<a href="'.$script.'&level=0">'.$this->Msg->show_text('TXT_ROOT_CATEGORY').' > </a>'.$str;
+            $str = FrontendPages::getMicroFormPathItem( $this->multi['TXT_FRONT_HOME_PAGE'], _LINK, false  ).$devider
+                   .FrontendPages::getMicroFormPathItem( $this->multi['TXT_CATALOG'], _LINK.'catalog/' ).$devider
+                   .$str;
+
         }
-        //echo $str;
+        else {
+            $str = FrontendPages::getMicroFormPathItem( $this->multi['TXT_FRONT_HOME_PAGE'], _LINK, false) . $devider
+                   .FrontendPages::getMicroFormPathItem( $this->multi['TXT_CATALOG'], null, false );
+        }
+        
         return $str;
 
         //echo '<a href="'._LINK.'">'.$this->multi['TXT_FRONT_HOME_PAGE'].'</a> '.$devider.' <a href="'._LINK.'catalog/">'.$this->multi['TXT_CATALOG'].'</a> '.$devider.' '.$str;
     } // end of function ShowPathToLevel()
-
-    // ================================================================================================
-    // Function : getMicroFormPathItem()
-    // Version : 1.0.0
-    // Date : 14.03.2014
-    //
-    // Parms :        $link - Reference category or product, $name - Category name or product
-    // Returns :      $str_micro / string Preformed mіkro reference format
-    // Description :  Return as links path of the categories to selected level of catalogue
-    // ================================================================================================
-    // Programmer :  Bogdan Iglinsky
-    // Date : 14.03.2014
-    // Reason for change : Creation
-    // Change Request Nbr:
-    // ================================================================================================
-    function getMicroFormPathItem($link, $name)
-    {
-        if (!strstr($link, 'http')) {
-            $link = 'http://' . NAME_SERVER . $link;
-        }
-        $str_micro = '<span class="path-div-in-micro" itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-                    <a href="' . $link . '" itemprop="url">
-                        <span itemprop="title">' . $name . '</span>
-                    </a>
-                </span> ';
-        return $str_micro;
-    }
 
     // ================================================================================================
     // Function : ShowMainCategories()
@@ -296,7 +277,6 @@ class CatalogLayout extends CatalogParamLayout
                         </div>
                         <div class="menu-param">
                             <?$this->showFilterMenu($row['id']);?>
-
                         </div>
 
                     </li>
@@ -314,6 +294,48 @@ class CatalogLayout extends CatalogParamLayout
     //--- end of function ShowMainCategories() -------------------------------------------------------------------------
 
 
+function ShowMainCategories2($level){
+
+
+        $path = $this->ShowPathToLevel($level);
+
+        if (is_array($this->GetTreeCatLevel($level))) {
+            ?>
+            <ul class="listCat">
+                <?
+                $keys = array_keys($this->GetTreeCatLevel(0));
+                $n = count($keys);
+                for ($i = 0; $i < $n; $i++) {
+                    $row = $this->GetTreeCatData($keys[$i]);
+
+                    if ($row['id'] == 0) continue;
+                    if ($row['show_in_menu'] == 0) continue;
+
+                    $img_cat = $row['img_cat'];
+                    $name = stripslashes($row['name']);
+                    $link = $this->getUrlByTranslit($row['path']);
+                    //del
+
+                    ?>
+                    <li <?php echo ( isset($this->id_cat) && $this->id_cat==$row['id']) ? "class='sel-category'": "" ?>>
+                        <div class="link-categ">
+                        <a href="<?= $link; ?>" title="<?= htmlspecialchars($name); ?>"><span><?= $name; ?></span></a>
+                        </div>
+                        <div class="menu-param">
+                            <?$this->showFilterMenu($row['id']);?>
+                        </div>
+
+                    </li>
+                <?
+                }// end for
+                ?>
+            </ul>
+        <?
+        }
+
+    }
+    //--- end of function
+
     function ShowMainCategoriesImg($pathRender=false, $level=0)
     {
 
@@ -321,13 +343,31 @@ class CatalogLayout extends CatalogParamLayout
             $this->PageUser->breadcrumb = $this->ShowPathToLevel($this->id_cat, NULL, true);
         }
         $path = $this->ShowPathToLevel($level);
+        //var_dump( $level, $this->treeCatLevels );
 
-        if (is_array($this->GetTreeCatLevel($level))) {
+        $tree = $this->GetTreeCatLevel($level);
 
-            ?>
+        if (isset($this->settings['multi_categs']) AND $this->settings['multi_categs'] == 1) {
+            $q = "
+                SELECT `id_prop`
+                FROM `" . TblModCatalogCatMultiCategs . "`
+                WHERE `id_cat` = '".$this->id_cat."'
+            ";
+            $res = $this->db->db_Query($q);
+            if ( $res && $this->db->db_GetNumRows() > 0 ){
+                while ( $row = $this->db->db_FetchAssoc() ){
+                    $tree[ $row['id_prop'] ] = '';
+                }
+            }
+            //else echo $q;
+        }
+        //var_dump($tree);
+
+
+        if ( is_array($tree) ): ?>
             <div class="listCatImg">
                 <?
-                $keys = array_keys($this->GetTreeCatLevel($level));
+                $keys = array_keys($tree);
                 $n = count($keys);
                 for ($i = 0; $i < $n; $i++) {
                     $row = $this->GetTreeCatData($keys[$i]);
@@ -353,14 +393,7 @@ class CatalogLayout extends CatalogParamLayout
                 }// end for
                 ?>
             </div>
-        <?
-        } else {
-            ?>
-
-        <?
-        }
-
-
+        <? endif;
     }
 
 
@@ -394,7 +427,7 @@ class CatalogLayout extends CatalogParamLayout
         if($lable=='share'){
             $this->PageUser->h1 = "Акции";
         }
-        $this->PageUser->breadcrumb = $this->ShowPathToLevel($this->id_cat, NULL, true);
+        $this->PageUser->breadcrumb = $this->ShowPathToLevel($this->id_cat, NULL, 0);
 
         $params = '';
         $descr1 = '';
@@ -549,8 +582,8 @@ class CatalogLayout extends CatalogParamLayout
             case '5':
                 $width = 'width20';
                 break;
-
         }
+
         $rows = count($tree);
         $cat_data = array();
         $keys = array_keys($tree);
@@ -576,10 +609,12 @@ class CatalogLayout extends CatalogParamLayout
         <?
         }
         // end for
+
         return View::factory('/modules/mod_catalog/templates/tpl_catalog_levels_name.php')
             ->bind('width', $width)
             ->bind('rows', $rows)
             ->bind('cat_data', $cat_data);
+
     } // end of function  ShowLevelsNameShort()
 
 
@@ -912,7 +947,7 @@ class CatalogLayout extends CatalogParamLayout
         $name = stripslashes($row['name']);
 
         if(isset( $row['valparam']) && !empty( $row['valparam'] ) ) {
-            $manufac = $this->Spr->GetNameByCod( 'mod_catalog_param_val', $row['valparam'], $this->lang_id, 1 );
+            $manufac = $this->Spr->GetNameByCod( 'mod_catalog_param_val', $row['valparam'], $this->lang_id, 0 );
             echo "<div class='manufac'>".$manufac."</div>";
         }
 
@@ -921,8 +956,7 @@ class CatalogLayout extends CatalogParamLayout
         } else {
             $this->PageUser->h1 = stripslashes($row['h1']);;
         }
-        $this->PageUser->breadcrumb = $this->ShowPathToLevel($this->id_cat, NULL, 1) . '/' .
-            $this->getMicroFormPathItem($this->Link($this->id_cat, $this->id), $name);
+        $this->PageUser->breadcrumb = $this->ShowPathToLevel($this->id_cat, FrontendPages::getMicroFormPathItem($name, null,  false), 1, false);
         ?>
         <div class="body">
         <div class="tovarImage float-to-left width40">
@@ -1141,7 +1175,7 @@ class CatalogLayout extends CatalogParamLayout
                         <div class="tab-item" data-item="2">Документы и файлы</div>
                     </div>
                 </div>
-                <div class="btn-categ">
+                <div id="responseTab" class="btn-categ">
                     <div class="wrapper-tab">
                         <div class="tab-item" data-item="4">Отзывы (<?=$this->Comments->commentsCount?>)</div>
                     </div>
@@ -1526,7 +1560,7 @@ class CatalogLayout extends CatalogParamLayout
         <h1 class="bgrnd"><?= $name; ?></h1>
 
         <div class="subBody">
-            <div class="path"><? $this->ShowPathToLevel($this->id_cat, NULL, 1); ?></div>
+            <div class="path"><? $this->ShowPathToLevel($this->id_cat, NULL, 0); ?></div>
             <div class="tovarImage float-to-left">
                 <!-- display image start-->
                 <?
@@ -2845,7 +2879,7 @@ function ShowRelatProp($arr, $slider=true, $vertical=false, $for_categ=false)
     // Programmer : Yaroslav Gyryn
     // Description : Shows best products
     // ================================================================================================
-    function BestProducts($limit = null, $fltr_id = 2, $informer = false)
+    function BestProducts($limit = null, $fltr_id = 2, $informer = false, $order = false)
     {
         ob_start();
         switch ($fltr_id) {
@@ -2925,6 +2959,9 @@ function ShowRelatProp($arr, $slider=true, $vertical=false, $for_categ=false)
         $q = $q . " AND " . $ftl;
 
         $q = $q . " GROUP BY `" . TblModCatalogProp . "`.id ";
+        if ($order){
+            $q = $q.$order;
+        }
         if ($limit) $q = $q . " limit " . $limit;
         //echo $q;
 
@@ -2999,14 +3036,11 @@ function ShowRelatProp($arr, $slider=true, $vertical=false, $for_categ=false)
                 }
                 ?>
 
-                    <?if(!$informer):?>
-
+                <?if(!$informer):?>
                     <div class="short-prop">
                         <?= $short; ?>
-
                     </div>
-
-                    <?endif;?>
+                <?endif;?>
 
 
 
@@ -3081,15 +3115,8 @@ function ShowRelatProp($arr, $slider=true, $vertical=false, $for_categ=false)
                         <div class="addToCart" id="al_<?= $row['id']?>"></div>
                     </div>
                 <?endif;?>
-
-
                 </div>
                 </div>
-
-
-
-
-
                <?
             } //end foreach
         } //end if

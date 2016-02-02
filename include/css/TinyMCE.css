@@ -1,0 +1,118 @@
+body, td, pre {color:#000; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:8px;}
+ 
+body {background:#FFF;}
+body.mceForceColors {background:#FFF; color:#000;}
+h1{
+    font-size: 35px;
+    margin-bottom: 20px;
+}
+h2{
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+h3{
+    font-size: 25px;
+    margin-bottom: 12px;
+}
+h4{
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+h5{
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+h6{
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+p{
+    margin-bottom: 15px;
+}
+ul{
+    list-style: disc;
+    margin: 0 15px 10px 15px;
+}
+ul ul{
+    margin: 10px 0 10px 25px;
+}
+ol{
+    list-style: decimal;
+    margin: 0 15px 10px 20px;
+}
+ol ol{
+    margin: 10px 0 10px 25px;
+}
+li{
+    margin-bottom: 5px;
+}
+table{
+    margin-bottom: 15px;
+    width: auto;
+    border: 1px solid grey;
+}
+th,
+td{
+    border: 1px solid grey;
+    padding: 4px;
+    text-align: left;
+}
+th{
+    font-weight: bold;
+    text-align: center;
+}
+a{
+    color: blue;
+    text-decoration: underline;
+}
+a:not.news-content a{
+    color: blue;
+    text-decoration: underline;
+}
+a:visited:not.news-content a{
+    color: #0000aa;
+}
+a:hover:not.news-content a{
+    color: blue;
+    text-decoration: none;
+}
+a:active:not.news-content a{
+    color: red;
+}
+p img, td img{
+    border: 0px !important;
+}
+img[align=left]{
+    margin: 0 10px 10px 0;
+    float: left;
+}
+img[align=right]{
+    margin: 0 0 10px 10px;
+    float: right;
+}
+dl{
+    margin: 0 0 15px 0;
+}
+dt{
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+dd{
+    margin-bottom: 5px;
+}
+hr{
+    height: 1px;
+    border: none;
+    color: #aaa;
+    background: #aaa;
+    margin: 10px 0;
+    clear: both;
+}
+strong,
+b{
+    font-weight: bold;
+}
+em,
+i{
+    font-style: italic;
+}

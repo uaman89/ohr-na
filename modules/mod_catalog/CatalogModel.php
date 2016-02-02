@@ -810,7 +810,7 @@ class CatalogModel extends Catalog
         //var_dump($arr);
 
         $row['short'] = $this->cropStr($row['short'], 200);
-
+        
         if($this->sort=='price'){
             $arrRow = $arr;
             //var_dump($arrRow);
