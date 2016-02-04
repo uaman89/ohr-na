@@ -293,19 +293,34 @@ include_once( $_SERVER['DOCUMENT_ROOT'].'/modules/mod_order/order.defines.php' )
       ?><tr><td colspan="10"><?
         $this->Form->WriteLinkPages( $this->script, $rows, $this->display, $this->start, $this->sort );
 
-      ?><tr><td colspan="4"><?
+    ?>
+    <tr><td colspan="4">
+        <?
         if($this->Right->IsUpdate()) $this->Form->WriteSavePanel( $this->script );
         if($this->Right->IsDelete()) {
             if($this->fltr==6) $this->Form->WriteTopPanel( $this->script,2);
             else $this->Form->WriteTopPanel( $this->script,1);
 
         }
+        ?>
+        <a class="r-button" href="#" id="orderExportBtn">
+            <span>
+                <span>
+                    <img src="images/icons/document-export.png" height="23" alt="Экпорт" title="Экпорт">
+                    Экпорт
+                </span>
+            </span>
+        </a>
+        <?
 
-      $script2 = 'module='.$this->module.'&display='.$this->display.'&start='.$this->start.'&task=show&fltr='.$this->fltr;
-      $script2 = $_SERVER['PHP_SELF']."?$script2";
-       ?>
-       <tr>
-        <th class="THead" width="30">*</th>
+
+        $script2 = 'module='.$this->module.'&display='.$this->display.'&start='.$this->start.'&task=show&fltr='.$this->fltr;
+        $script2 = $_SERVER['PHP_SELF']."?$script2";
+        ?>
+    <tr>
+        <th class="THead" width="30">
+            <input type="button" value="BCE" id="selecAllCheckboxes">
+        </th>
         <?/*
         <th class="THead" width="80"><A HREF=<?=$script2?>&sort=id_order><?=$this->multi['FLD_NUM_ORDER'];?></A></th>
         <th class="THead" width="100"><A HREF=<?=$script2?>&sort=date><?=$this->multi['FLD_DATE'];?></A></th>
@@ -341,6 +356,23 @@ include_once( $_SERVER['DOCUMENT_ROOT'].'/modules/mod_order/order.defines.php' )
                             $('#fancybox-content').height($(this).contents().find('body').height()+30);
                         });
                     }
+                });
+
+                $('#orderExportBtn').click(function(){
+                    $('#task').val('default');
+                    $.fancybox({
+                      type: 'ajax',
+                      href: '/modules/mod_order/order_ImpExp.php?module=<?=$this->module?>',
+                      ajax:{
+                        data: $('#form_mod_order').serialize()
+                      }
+                    });
+                });
+                
+                $('#selecAllCheckboxes').click(function(){
+                     var checkboxes = document.getElementsByName('id_del[]');
+//                     console.log('checkboxes',checkboxes);
+                     $(checkboxes).attr('checked','checked');
                 });
             })
         </script>
