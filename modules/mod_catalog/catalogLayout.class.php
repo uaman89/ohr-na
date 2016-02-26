@@ -967,39 +967,58 @@ function ShowMainCategories2($level){
 
                 if (isset($row_img['0']['id'])) {
                     if (empty($id_img)) $id_img = $row_img[0]['id'];
-
                     ?>
-                    <div class="img-big">
+                    <div style=" width: 297px; height: 340px; float: left;">
+                        <div class="img-big">
+                            <?php
+                            $cnt = count($row_img);
+                            for ($i = 0; $i < $cnt; $i++) {
+                                $path =  ImageK::getResizedImg($this->getPictureRelPath($this->id, $row_img[$i]['path']), 'size_height=1000', 85, 'img');
 
-                        <?php
+                                //$path = "http://" . NAME_SERVER . $settings['img_path'] . "/" . $this->id . "/" . $row_img[$i]['path'];
 
-                        $cnt = count($row_img);
-                        for ($i = 0; $i < $cnt; $i++) {
-                            $path =  ImageK::getResizedImg($this->getPictureRelPath($this->id, $row_img[$i]['path']), 'size_height=1000', 85, 'img');
+                                if ( empty($row_img[$i]['alt']) ) $row_img[$i]['alt'] = "Фото - ".$name;
+                                if ( empty($row_img[$i]['title']) ) $row_img[$i]['title'] = $name." от компании «Ohrana.ua»";
 
-                            //$path = "http://" . NAME_SERVER . $settings['img_path'] . "/" . $this->id . "/" . $row_img[$i]['path'];
+                                $alt = htmlspecialchars(stripslashes($row_img[$i]['alt']));
+                                $title = htmlspecialchars(stripslashes($row_img[$i]['title']));
 
-                            if ( empty($row_img[$i]['alt']) ) $row_img[$i]['alt'] = "Фото - ".$name;
-                            if ( empty($row_img[$i]['title']) ) $row_img[$i]['title'] = $name." от компании «Ohrana.ua»";
+                                //$path = "http://" . NAME_SERVER . $settings['img_path'] . "/" . $this->id . "/" . $row_img[$i]['path'];
 
-                            $alt = htmlspecialchars(stripslashes($row_img[$i]['alt']));
-                            $title = htmlspecialchars(stripslashes($row_img[$i]['title']));
-
-                            //$path = "http://" . NAME_SERVER . $settings['img_path'] . "/" . $this->id . "/" . $row_img[$i]['path'];
-
-                            ?>
-
-                            <a href="<?= $path; ?>"  title="<?= $name; ?>" target="_blank" class="fancybox sel-img" rel="gal" id="i<?=$i;?>" >
-
-                                <?
-                                $imgSmall = ImageK::getResizedImg( ImageK::getResizedImg($this->getPictureRelPath($this->id, $row_img[$i]['path']), 'size_height=250', 85, NULL), 'size_width=297', 85, 'img' );
                                 ?>
-                                <img itemprop="image" src="<?= $imgSmall; ?>" alt='<?= $alt; ?>' title='<?= $title ?>'/>
-                            </a>
 
-                        <?
-                        }?>
+                                <a href="<?= $path; ?>"  title="<?= $name; ?>" target="_blank" class="fancybox sel-img" rel="gal" id="i<?=$i;?>" >
 
+                                    <?
+                                    $imgSmall = ImageK::getResizedImg( ImageK::getResizedImg($this->getPictureRelPath($this->id, $row_img[$i]['path']), 'size_height=250', 85, NULL), 'size_width=297', 85, 'img' );
+                                    ?>
+                                    <img itemprop="image" src="<?= $imgSmall; ?>" alt='<?= $alt; ?>' title='<?= $title ?>'/>
+                                </a>
+                                <?
+                            }
+                            ?>
+                        </div>
+                        <? if (isset($row_img['0']['id'])) :?>
+                            <div class="image_carousel" style="float:left">
+                                <div id="foo1" class="floatToLeft">
+                                    <?
+
+                                    $counter = 0;
+                                    for ($i = 0; $i < $cnt; $i++) {
+
+                                        $path = "http://" . NAME_SERVER . $settings['img_path'] . "/" . $this->id . "/" . $row_img[$i]['path'];
+                                        $alt = htmlspecialchars(stripslashes($row_img[$i]['alt']));
+                                        $title = htmlspecialchars(stripslashes($row_img[$i]['title']));
+                                        $counter++;
+                                        ?><a class="marginRight3 floatToLeft marginTop8" data-id="<?=$i?>" title="<?= $name; ?>" target="_blank"><?= $this->ShowCurrentImage($row_img[$i]['path'], 'size_rect=88x69', 95, NULL, "alt='" . $alt . "' title='" . $title . "'", $this->id); ?></a><?
+                                    } ?>
+                                </div>
+                                <div class="clearfix"></div>
+                                <a class="prevP" id="foo1_prev" href="#"><span>prev</span></a>
+                                <a class="nextP" id="foo1_next" href="#"><span>next</span></a>
+
+                            </div>
+                        <?php endif;?>
                     </div>
                 <?} else { ?>
                     <img src="/images/design/no-image.jpg" alt="no-photo" title="no-photo" border="0"/><?
@@ -1015,7 +1034,8 @@ function ShowMainCategories2($level){
                                     $price_group = round($price_group);
                                 }
 
-                                ?> <div class="new_price"><span itemprop="price"><?= $this->Currency->ShowPrice($price_group); ?></span>
+                                ?>
+                                <div class="new_price"><span itemprop="price"><?= $this->Currency->ShowPrice($price_group); ?></span>
                                     <meta itemprop="priceCurrency" content="UAH"/>
                                     <link itemprop="availability" href="http://schema.org/InStock"/>
                                 </div>
@@ -1114,30 +1134,12 @@ function ShowMainCategories2($level){
                         </div>
                     </div>
                 </div>
-                <? if (isset($row_img['0']['id'])) :?>
-                    <div class="image_carousel" style="float:left">
-                        <div id="foo1" class="floatToLeft">
-                            <?
-
-                            $counter = 0;
-                            for ($i = 0; $i < $cnt; $i++) {
-
-                                $path = "http://" . NAME_SERVER . $settings['img_path'] . "/" . $this->id . "/" . $row_img[$i]['path'];
-                                $alt = htmlspecialchars(stripslashes($row_img[$i]['alt']));
-                                $title = htmlspecialchars(stripslashes($row_img[$i]['title']));
-                                $counter++;
-                                ?><a class="marginRight3 floatToLeft marginTop8" data-id="<?=$i?>" title="<?= $name; ?>" target="_blank"><?= $this->ShowCurrentImage($row_img[$i]['path'], 'size_rect=88x69', 95, NULL, "alt='" . $alt . "' title='" . $title . "'", $this->id); ?></a><?
-                            } ?>
-                        </div>
-                        <div class="clearfix"></div>
-                        <a class="prevP" id="foo1_prev" href="#"><span>prev</span></a>
-                        <a class="nextP" id="foo1_next" href="#"><span>next</span></a>
-
-                    </div>
-                <?php endif;?>
             </div>
 
             <!--display image end-->
+
+
+
         </div>
         <?php
         if($arrSetProp) {
