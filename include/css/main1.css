@@ -2850,3 +2850,7 @@ text-align: justify;
     background: url(/images/design/order-remove.png);
     cursor: pointer;
 }
+
+.tovarImage.float-to-left.width40{
+    overflow: auto;
+}

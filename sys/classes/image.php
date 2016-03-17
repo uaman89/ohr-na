@@ -323,7 +323,8 @@ abstract class ImageK {
                 //echo '<br>$size_wtm='.$size_wtm;
                 $wtm = SITE_PATH . ImageK::getResizedImg(WATERMARK_IMG_PATH, 'size_auto='.$size_wtm, 85);
                 $mark = ImageK::factory($wtm);
-                $ImageK->watermark($mark);
+                //$ImageK->watermark($mark);
+                //batman
                 $flag_to_save = true;
             }else{
                 $flag_to_save = false;
