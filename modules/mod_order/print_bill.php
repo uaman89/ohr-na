@@ -19,8 +19,7 @@ else $id_del = $_REQUEST['id_del'];
 if( !isset( $_REQUEST['id_order'] ) ) $id_order = NULL;
 else $id_order = $_REQUEST['id_order'];
 
-if( !isset( $_REQUEST['waybill'] ) ) $waybill = NULL;
-else $waybill = $_REQUEST['waybill'];
+$waybill = ( isset( $_REQUEST['waybill'] ) ) ? $_REQUEST['waybill'] : null;
 
 $Order = new OrderCtrl($logon->user_id, $module);
 $Order->module = $module;
@@ -28,7 +27,8 @@ $Order->user_id = $logon->user_id;
 $Order->id_order = $id_order;
 
 if ( !empty($waybill) ){
-    $Order->PrintOrderBackEnd('waybill');
+    $waybillType = ( $waybill=='service_waybill' ) ? 'service' : 'client';
+    $Order->PrintOrderBackEnd($waybillType);
 }
 else{
     $Order->PrintOrderBackEnd();

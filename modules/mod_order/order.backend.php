@@ -287,11 +287,12 @@ switch ($my->task) {
         //$del = $my->del( $my->id_del );
         if (!empty($my->id_del)) {
             $del = $my->del($my->id_del);
-            //if ( $del > 0 ) echo "<script>window.alert('".$pg->Msg->get_msg('_SYS_DELETED_OK')." $del');</script>";
-            //else $pg->Msg->show_msg('_ERROR_DELETE');
-            if (!$del)
-                $pg->Msg->show_msg('_ERROR_DELETE');
-                $pg->Msg->show_msg('_ERROR_DELETE');
+            if ( $del > 0 ) echo "<script>window.alert('".$my->multi['_SYS_DELETED_OK']." $del');</script>";
+            else $pg->Msg->show_msg('_ERROR_DELETE');
+//            if (!$del)
+//                $pg->Msg->show_msg('_ERROR_DELETE');
+//            else
+//                $pg->Msg->show_msg('_SYS_DELETED_OK',);
         }
         else
             $pg->Msg->show_msg('_ERROR_SELECT_FOR_DEL');

@@ -391,7 +391,7 @@ switch( $task )
         echo '<script>makeRequest(\''._LINK.'order/\', \'task=cart&prod_id=0&quantity=0\', \'cart\')</script>';
         break;
 
-   case 'order_discount':
+    case 'order_discount':
 		if ( !empty($logon->user_id) ) {
 		//$my->save_order();
 		$my->FullCart(true);
@@ -408,6 +408,7 @@ switch( $task )
     break;
 
     case 'print_order':
+        $my->skipUserCheck = ( isset( $_REQUEST['skip_user_check'] ) ) ? $_REQUEST['skip_user_check'] : null;
         $my->PrintOrder();
         exit();
     break;
@@ -416,7 +417,7 @@ switch( $task )
         $my->PrintInvoice();
     break;*/
 
-	case 'history':
+    case 'history':
         if(!$my->id_order) {
             if($ajax_reload==0) {
                 ?><div id="my_d_basket"><?
@@ -428,6 +429,26 @@ switch( $task )
         }
         else
             $my->UserOrderHistory($logon->user_id, $my->id_order);
-		break;
+        break;
+
+    case 'print_clients_order_page':
+        $Page->breadcrumb = FrontendPages::getMicroFormPathItem('Главная', '/', false)
+            .'&nbsp;&nbsp;→&nbsp;&nbsp'
+            .FrontendPages::getMicroFormPathItem('служебный раздел', null, false);
+        $Page->h1 = 'Служебный раздел';
+
+        //maybe delete commented
+//        if ( isset($_REQUEST['magic_password']) && $_REQUEST['magic_password']=='printorder2016')
+//            $res = setcookie('print_client_order','printmebaby', time() + 60*60, $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME']);
+//
+//        if ( isset($_COOKIE['print_client_order']) && $_COOKIE['print_client_order']=='printmebaby' ){
+
+        if ( isset($_REQUEST['magic_password']) && $_REQUEST['magic_password']=='printorder2016'){
+            $my->showPrintClientOrderPage();
+        }
+        else{
+            $my->showAuthFormToPrintClientOrderBlank();
+        }
+        break;
 }
 ?>

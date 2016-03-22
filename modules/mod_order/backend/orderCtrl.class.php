@@ -395,13 +395,20 @@ include_once( $_SERVER['DOCUMENT_ROOT'].'/modules/mod_order/order.defines.php' )
                  &nbsp;<?$this->Form->Select( $mass, 'status['.$row['id_order'].']', $status, 10,'onChange="$(\'#orderId'.$row['id'].'\').attr(\'checked\',true);"');?>
                  <?
                  $link = '/modules/mod_order/print_bill.php?module='.$this->module.'&id_order='.$row['id_order'];
-                 $link2 = $link.'&waybill=1';
+                 $link2 = $link.'&waybill=service_waybill';
+                 $link3 = $link.'&waybill=1';
+
                  $width = '700px';
                  $height = '800px';
+
                  $params = "OnClick='window.open(\"".$link."\", \"\", \"width=".$width.", height=".$height.", status=0, toolbar=0, location=0, menubar=0, resizable=0, scrollbars=1\"); return false;'";
                  $params2 = "OnClick='window.open(\"".$link2."\", \"\", \"width=".$width.", height=".$height.", status=0, toolbar=0, location=0, menubar=0, resizable=0, scrollbars=1\"); return false;'";
+                 $params3 = "OnClick='window.open(\"".$link3."\", \"\", \"width=".$width.", height=".$height.", status=0, toolbar=0, location=0, menubar=0, resizable=0, scrollbars=1\"); return false;'";
                  ?>
-                 &nbsp;Распечатать: <a href="<?=$link;?>" <?=$params;?>>Счет</a> &nbsp;&nbsp;&nbsp;<a href="<?=$link2?>" <?=$params2;?>>Накладная</a>
+                 &nbsp;Распечатать:
+                 <a href="<?=$link;?>" <?=$params;?>>Счет</a>&nbsp;&nbsp;&nbsp;
+                 <a href="<?=$link2?>" <?=$params2;?>>Накладная</a>&nbsp;&nbsp;&nbsp;
+                 <a href="<?=$link2?>" <?=$params3;?>>Накладная-Клиент</a>
                  <?/*&nbsp;<span style="color:#087D2B" align="center"><?=$this->multi['FLD_ORDER_SUM']?>: <?=$row['sum'].' '.$this->Spr->GetNameByCod( TblSysCurrenciesSprSufix, $row['currency'], $this->lang_id, 1 );?></span>*/?>
                  </td>
             </tr>
@@ -1921,7 +1928,7 @@ include_once( $_SERVER['DOCUMENT_ROOT'].'/modules/mod_order/order.defines.php' )
     // Description :  Show Order for Print
     // Programmer :  Yaroslav Gyryn
     // ================================================================================================
-    function PrintOrderBackEnd( $param=NULL )
+    function PrintOrderBackEnd( $waybillType=NULL )
     {
         if(!$this->user_id){
          ?>
@@ -1942,8 +1949,8 @@ include_once( $_SERVER['DOCUMENT_ROOT'].'/modules/mod_order/order.defines.php' )
         $OrderLayout->id_order=$this->id_order;
 
         $o_comm = $this->GetOrderCommentInArr($this->id_order);
-        if ($param == 'waybill')
-            $OrderLayout->PrintWaybill();
+        if ( !empty($waybillType) )
+            $OrderLayout->PrintWaybill($waybillType);
         else {
             if ($o_comm['pay_method'] == 2)
                 $OrderLayout->PrintInvoice($o_comm);

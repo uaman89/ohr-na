@@ -488,6 +488,10 @@
                  //var_dump($email);
              ?>
 
+             <div class="sum-order display-none-desktop">
+                 <span>Итого к оплате: </span><div id="sum-mob"><?echo $this->sumAllFromData;?></div>
+             </div>
+
              <div class="subBody">
 
                  <div class="data-user-order">Оформить заказ</div>
@@ -497,20 +501,20 @@
                  <form name="order_comment" method="post" id="order_comments" action="/order/step4/" onclick="yaCounter25263488.reachGoal('zakazohrana'); return true;">
                      <div class='item-form'>
                          <div>
-                         ФИО<span>*</span><br>
+                         <span class="title-order">ФИО</span><span>*</span><br>
                          <input type="text" name="name" class="validate[required]" size="40" value="<?=$name?>">
                          </div>
                          <div>
                              <div>
-                                 Телефон<span>*</span><br>
+                                 <span class="title-order">Телефон</span><span>*</span><br>
                                  <input id="phoneMob" type="text" name="phone_mob" class="" size="40" value="<?=$phone_mob?>">
                              </div>
-                         Email<br>
+                         <span class="title-order">Email</span><br>
                          <input type="text" name="alias" class="validate[custom[email]]" size="40" value="<?=$email?>">
                          </div>
 
                          <div>
-                             Комментарий к заказу<br>
+                             <span class="title-order">Комментарий к заказу</span><br>
                              <input type="text" name="comment"></textarea>
                          </div>
 
@@ -539,8 +543,10 @@
                          }
                          ?>
                          <div>
-                             Вариант оплаты<br>
-                             <select data-placeholder="Вариант оплаты" name="pay_method" class="chosen-select " ><?= $selectItem2 ?></select>
+                             <span class="title-order">Вариант оплаты</span><br>
+                             <label class="pay_method" for="pay_method">
+                                <select data-placeholder="Вариант оплаты" name="pay_method" class="chosen-select " ><?= $selectItem2 ?></select>
+                             </label>
                          </div>
                          <!------------------------------------------------------------------------------------------------------------------>
 
@@ -574,16 +580,18 @@
                          }
                          ?>
                          <div>
-                             Вариант доставки<br>
-                         <select id="deliveryMethod" data-placeholder="Вариант доставки" name="delivery_method" class="chosen-select ">
-                             <?= $selectItem ?>
-                         </select>
+                             <span class="title-order">Вариант доставки</span><br>
+                         <label class="delivery_method" for="delivery_method">
+                             <select id="deliveryMethod" data-placeholder="Вариант доставки" name="delivery_method" class="chosen-select ">
+                                 <?= $selectItem ?>
+                             </select>
+                         </label>
 
                          <? if (isset($_GET['test'])) $class='class="test"'; else $class = ''; ?>
                          <div <?=$class?>style="position:relative">
                              <!-- nova poshta -->
                              <div id="novaPoshta" style="display:none;">
-                                 Адрес доставки
+                                 <span class="title-order">Адрес доставки</span>
                                  <input type='button' class='button_np gmap-btn' title='Подобрать на карте' value='' href='/np/index.php' />
                                  <a href="/np/index.php" class='button_np' style="margin-right: 10px">Подобрать на карте</a>
 
@@ -599,7 +607,7 @@
                              </div>
                              <!-- end nova poshta -->
                              <div id="deliveryAddress">
-                                 Адрес доставки
+                                 <span class="title-order">Адрес доставки</span>
                                  <textarea id="otherAdress" name="adr"><?=$city?></textarea>
                              </div>
                              <script>
@@ -630,7 +638,7 @@
                      </div>
                      </div>
                          <div class="item-form margint20">
-                             <div class="sum-order">
+                             <div class="sum-order display-none-mob">
                                  <span>Итого к оплате: </span><div id="sum"><?echo $this->sumAllFromData;?></div>
                              </div>
                              <div class="orderBtn" align="right">
@@ -1571,13 +1579,14 @@
                 <div><?=$this->multi['FLD_ORDER_ID'].' '.$id_order;?></div>
                 <?
             }
-            /*$link = _LINK.'order/invoice/'.$id_order.'/';
-            $width = '630px';
+            $link = _LINK.'order/print/'.$id_order.'/';
+            $width = '750px';
             $height = '800px';
             $params = "OnClick='window.open(\"".$link."\", \"\", \"width=".$width.", height=".$height.", status=0, toolbar=0, location=0, menubar=0, resizable=0, scrollbars=1\"); return false;'";
             ?>
-            <br/><a href="javascript:void(0);" target="_blank" <?=$params;?>><?=$this->multi['TXT_PRINT_ORDER']?></a>
-            <?*/
+            <br/>
+            <a class="print-order-link" href="javascript:void(0);" target="_blank" <?=$params;?>><?=$this->multi['TXT_PRINT_ORDER']?></a>
+            <?
 
            ?>
             </div>
@@ -1631,7 +1640,7 @@
                            $row = $this->db->db_FetchAssoc($res);
                            $j = $i+1;
                            //echo '<br/><strong><a href="#" class="toCartUrl"  onclick="makeRequest(\''._LINK.'order.php/\', \'task=history&amp;user_id='.$this->Logon->user_id.'&id_order='.$row['id_order'].'\', \'my_d_basket\'); return false;">
-                           echo '<br/><strong><a href="#" class="toCartUrl main-tr"  onclick="makeHistoryRequest(\''._LINK.'order/history/\', \'?user_id='.$this->Logon->user_id.'&width=630&height=800&id_order='.$row['id_order'].'\', \'hist'.$row['id'].'\'); return false;">
+                           echo '<br/><strong><a href="#" class="toCartUrl main-tr" data-show="'.$row['id'].'"  onclick="makeHistoryRequest(\''._LINK.'order/history/\', \'?user_id='.$this->Logon->user_id.'&width=630&height=800&id_order='.$row['id_order'].'\', \'hist'.$row['id'].'\'); return false;">
                           '.$this->multi['FLD_ORDER_ID'].$row['id_order'].' '.$this->multi['FLD_FROM'].' '.$row['date'].'</a></strong>';
                           ?><div class="hist" id="hist<?=$row['id'];?>"></div><?
                         }
@@ -1680,7 +1689,7 @@
                 }
     */
                 //способ доставки заказа
-                echo '<table cellpadding="0" cellspacing="2" border="0" style="margin-top: 10px;">';
+                echo '<table cellpadding="0" cellspacing="2" border="0" style="margin-top: 10px;" class="display-none-mob">';
 
                 $delivery_data = $this->Spr->GetDataByCod(TblModOrderSprDelivery, $row['delivery_method'], $this->lang_id, 1 );
                 if ( is_array($delivery_data) ) {
@@ -1724,6 +1733,44 @@
                      <td style="border-bottom:1px solid #f0f0f0;"></td>
                   </tr>
                   </table><br>
+                <? //способ доставки заказа моб ?>
+                <div class="table_delivery display-none-desktop">
+                <?php
+                    if ( is_array($delivery_data) ) {
+                        if ($delivery_data['short'] == 0)
+                            $delivery_price = $this->multi['TXT_FRONT_DELIVERY_COST_FREE'];
+                        else
+                            $delivery_price = $this->currency->Converting($this->delivery_price_currency, _CURR_ID, stripslashes($delivery_data['short']), 2); ?>
+                        <div class="delivery_title"><?=$this->multi['TXT_FRONT_DELIVERY_METHOD'];?>:</div>
+                        <div class="delivery_content"><?=stripslashes($delivery_data['name']);?> (<?=$this->currency->ShowPrice($delivery_price);?>)</div>
+                <?php }
+                else echo $delivery_data;
+
+                if($row['comment']!=''){
+                    echo '<div class="delivery_title">'.$this->multi['_TXT_YOUR_COMM'].':</div>
+                          <div class="delivery_content">'.stripslashes($row['comment']).'</div>';
+                }
+
+                $width = 700;
+                $height = 600;
+                $params = "OnClick='window.open(\""._LINK."order/print/".$id_order."/\", \"print_order\", \"width=".$width.", height=".$height.", status=0, toolbar=0, location=0, menubar=0, resizable=1, scrollbars=1\"); return false;'";
+
+                ?>
+                     <div class="delivery_title"><?=$this->multi['_TXT_O_DATE'];?>:</div>
+                     <div class="delivery_content"><?=$row['date']?></div>
+                     <div class="delivery_title"><?=$this->multi['_TXT_O_STATUS']?>:</div>
+                     <div class="delivery_content border-bottom-none"><?=$status?></div>
+                      <?if ( !empty($row['ttn']) ): ?>
+                         <div class="delivery_title">ТТН:</div>
+                         <div class="delivery_content">
+                            <a href="http://novaposhta.ua/tracking/?cargo_number=<?=$row['ttn']?>" target="_blank"><?=$row['ttn']?></a>
+                        </div>
+                      <? endif; ?>
+                      <div class="delivery_print">
+                         <?/*<a href="<?=_LINK?>order/print/<?=$id_order?>/" target="_blank">Печать заказа</a>*/?>
+                         <a  href="javascript:void(0)" <?=$params;?>><?=$this->multi['TXT_PRINT_ORDER'];?></a>
+                      </div>
+                  </div>
                 <?
 
                 $this->FullCart( false, $id_order );
@@ -2185,35 +2232,41 @@
         function PrintOrder()
         {
             $o_comm = $this->GetOrderCommentInArr($this->id_order);
-            if (!isset($logon)) $logon = new  UserAuthorize();
-            //echo '<br />$logon->user_id='.$logon->user_id.' $o_comm[buyer_id]='.$o_comm['buyer_id'];
-            if( ( intval($logon->user_id)!=intval($o_comm['buyer_id'])) OR (empty($o_comm['buyer_id']) AND !isset($_COOKIE['kor_order_id'][$this->id_order])) ){
-             ?>
-             <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-             <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru">
-             <head>
-                <title><?=$this->multi['TXT_STATEMENT_ACCOUNT']?> <?=$this->multi['TXT_ACCESS_DENIED']?>!</title>
-             </head>
-             <body>
-                <h1><?=$this->multi['TXT_ACCESS_DENIED']?></h1>
-              </body>
-             </html>
-             <?
-             return true;
-            }
 
+            if (!isset($this->skipUserCheck)){
+
+                if (!isset($logon)) $logon = new  UserAuthorize();
+                //echo '<br />$logon->user_id='.$logon->user_id.' $o_comm[buyer_id]='.$o_comm['buyer_id'];
+                if( ( intval($logon->user_id)!=intval($o_comm['buyer_id'])) OR (empty($o_comm['buyer_id']) AND !isset($_COOKIE['kor_order_id'][$this->id_order])) ){
+                     ?>
+                     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+                     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru">
+                     <head>
+                        <title><?=$this->multi['TXT_STATEMENT_ACCOUNT']?> <?=$this->multi['TXT_ACCESS_DENIED']?>!</title>
+                     </head>
+                     <body>
+                        <h1><?=$this->multi['TXT_ACCESS_DENIED']?></h1>
+                      </body>
+                     </html>
+                     <?
+                     return true;
+                }
+
+            }
+            $this->PrintWaybill();
+            /*old code
              //если оплата через банковский платеж, то отображаем счет-фактуру для оплаты заказа
              //$this->PrintInvoice($o_comm);
              if($o_comm['pay_method']==2)
                  $this->PrintInvoice($o_comm);
              else
-                $this->PrintOrderBlank($o_comm);
+                $this->PrintOrderBlank($o_comm);*/
 
         }
     //---- end of PrintOrder -----------------------------------------------------------------------------------------------
 
 
-        function PrintWaybill(){
+        function PrintWaybill( $waybillType = 'client' ){
             if ( !isset($this->id_order) || empty($this->id_order) ) echo 'пустой заказ';
             $o_comm = $this->GetOrderCommentInArr($this->id_order);
 
@@ -2334,6 +2387,16 @@
             endfor;
 
             $prods_table_top = $prods_table_top_header.$prods_table_body.$prods_table_top_footer;
+
+            if ( $waybillType == 'client' ){
+                echo View::factory('/modules/mod_order/templates/tpl_waybill.php')
+                    ->bind('waybillType', $waybillType)
+                    ->bind('multi', $this->multi)
+                    ->bind('prods_table_top', $prods_table_top)
+                    ;
+                exit;
+            }
+
             $prods_table_bottom = $prods_table_bottom_header.$prods_table_body.$prods_table_bottom_footer;
 
             //delivery info
@@ -2394,157 +2457,64 @@
             $delivery_table_bottom = $deliv_tbl_bottom_header.$deliv_tbl_body;
 
             //out waybill:
-            ?>
 
-            <!DOCTYPE html>
-            <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru">
-            <head>
-                <META http-equiv="Content-Type" content="text/html; charset=utf-8">
-                <META http-equiv="content-language" content="ru">
-                <title><?=$this->multi['TXT_STATEMENT_ACCOUNT']?></title>
-                <style>
-                     *{
-                         margin: 0;
-                         padding: 0;
-                     }
-                     .wrapper{
-                         margin: 0 auto;
-                         font-family: Tahoma, Arial;
-                         height: 29cm;
-                         width: 21cm;
-                         /*border: 1px solid red;*/
-                         overflow: hidden;
-                         box-sizing: border-box;
-                     }
-                     p {margin: 0; padding: 0;}
-                     table{border-collapse: collapse;}
-
-                     .prods-table{
-                         overflow: hidden;
-                         border-width: 1px;
-                     }
-
-                     .prods-table td{
-                         font-size: 0.32cm;
-                         text-align: center;
-                         padding: 2px 4px;
-                     }
-                     .prods-table td:nth-child(2){
-                         text-align: left;
-                     }
-                     .delivery-table-top{
-                         width: 100%;
-                         height: 16%;
-                         overflow: hidden;
-                     }
-                     .delivery-table-bottom{
-                         width: 75%;
-                         height: 3.2cm;
-                         overflow: hidden;
-                     }
-
-                     .delivery-table td{
-                         font-size: 0.3cm;
-                         padding: 1px 4px;
-                         height: 0.33cm;
-                         overflow: hidden;
-                     }
-                     .cut-line{
-                         height: 1px; clear: both; border-bottom:1px dashed grey;
-                         margin: 0.15cm 0;
-                     }
-                     .order-footer{
-                         margin-top: 0.1cm;
-                         position: relative;
-                         height: 0.6cm;
-                         overflow: hidden;
-                     }
-                     .order-footer .order-comment{
-                         position: absolute;
-                         left: 0;
-                         font-size: 0.25cm;
-                         max-width: 60%;
-                     }
-                     .order-footer .total-sum{
-                         position: absolute;
-                         right: 0;
-                         font-weight: bold;
-                         font-size: 0.4cm;
-                     }
-                     .user-card-place{
-                         width: 34mm;
-                         height: 9mm;
-                         border: 1px solid #E9E9E9;
-                         margin: 0 auto;
-                         font-weight: bold;
-                         text-align: left;
-                         font-size: 4mm;
-                         line-height: 4mm;
-                         overflow: hidden;
-                         padding: 2mm 1mm;
-                         position: relative;
-                     }
-                     .user-phone{
-                         letter-spacing: -0.06mm;
-                         margin-top: -1.6mm;
-                         line-height: 5mm;
-                         display: block;
-                         font-stretch: normal;
-                     }
-                     .user-pass{
-                         margin-top: 3.4mm;
-                         letter-spacing: 2.1px;
-                         display: block;
-                     }
-                     .ucp-wrapper{
-                         width: 25%;
-                         float: right;
-                     }
-                     @media all {
-                         .page-break	{ display: none; }
-                     }
-                     @media print {
-                         .page-break	{ display: block; page-break-before: always; }
-                         .page-break:last-child {
-                             page-break-after: none;
-                         }
-                     }
-                 </style>
-            </head>
-            <body style="background:white;">
-            <input type="submit" name="submit" value="<?=$this->multi['TXT_PRINT_ORDER']?>" onclick="this.style.display='none'; window.print();" style="display: block; margin:0 auto 10px;" />
-            <div class="wrapper">
-
-                <?=$prods_table_top?>
-                <br/>
-                <?=$delivery_table_top?>
-                <div style="height:9mm"></div>
-
-            <?php if ($split_page): ?>
-            </div>
-            <div class="page-break"></div>
-            <div class="wrapper">
-            <? else: ?>
-                <div class="cut-line"></div>
-            <? endif; ?>
-
-                    <div class="ucp-wrapper">
-                        <div class="user-card-place">
-                            <span class="user-phone"><?=$phone_mob?></span>
-                            <span class="user-pass"><?=$user_pass?></span>
-                        </div>
-
-                    </div>
-                    <?=$delivery_table_bottom?>
-                <div class="cut-line" style="margin-bottom: 0.5cm; margin-top: 0.13cm"></div>
-                <?=$prods_table_bottom?>
-
-            </div>
-
-            </body>
-            </html>
-        <?
+            echo View::factory('/modules/mod_order/templates/tpl_waybill.php')
+                    ->bind('waybillType', $waybillType)
+                    ->bind('multi', $this->multi)
+                    ->bind('prods_table_top', $prods_table_top)
+                    ->bind('delivery_table_top', $delivery_table_top)
+                    ->bind('split_page', $split_page)
+                    ->bind('phone_mob', $phone_mob)
+                    ->bind('user_pass', $user_pass)
+                    ->bind('delivery_table_bottom', $delivery_table_bottom)
+                    ->bind('prods_table_bottom', $prods_table_bottom);
         }
 //---- END of PrintWaybill() -------------------------------------------------------------------------------------------
 
-     }//end of class OrderLayout
+        function showAuthFormToPrintClientOrderBlank(){
+            ?>
+            <div class="cool-bg">
+                <form method="post">
+                    <input type="hidden" name="task" value="print_clients_order_page">
+                    <input type="text" name="service" value="service_page_ohrana.ua" style="display:none;">
+                    <label for="magicPassword">Введите пароль:</label>
+                    <input id="magicPassword" type="password" name="magic_password">
+                    <input type="submit" value="Вход">
+                </form>
+            </div>
+            <?
+        }
+//---- end showAuthFormToPrintClientOrderBlank() ----------------------------------------------------------------------------------------------
+
+
+    function showPrintClientOrderPage(){
+        ?>
+        <div class="cool-bg">
+            <input id="idOrder" type="text" name="id_order" placeholder="ID заказа" autofocus>
+            <input id="printClientOrder" type="button" value="<?=$this->multi['TXT_PRINT_ORDER']?>">
+            <br/>
+        </div>
+        <br>
+        <script>
+                var idOrderInput = $('#idOrder');
+                $('#printClientOrder').on('click', function(){
+                    openPrintWindow();
+                });
+                idOrderInput.keypress(function(e) {
+                    if(e.which == 13) {
+                        openPrintWindow();
+                    }
+                });
+
+                function openPrintWindow(){
+                    var id_order = idOrderInput.val();
+                    var link = 'order/print-client-waybill/'+id_order+'/';
+                    window.open( link, 'Print ' + id_order, 'left="25%" width="", height="90%", status=0, toolbar=0, menubar=0, resizable=0, scrollbars=1');
+                }
+        </script>
+        <?
+    }
+//---- end showPrintClientOrderPage() ----------------------------------------------------------------------------------------------
+
+
+}//end of class OrderLayout

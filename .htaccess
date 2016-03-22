@@ -180,19 +180,21 @@ RewriteRule ^forgotpass.html$                       /login.php?task=forgotpass  
 #======================================== USERS REGISTRATION END ==============================================================
 
 #======================================== ORDER START ============================================================
-RewriteRule ^order/$                                            /modules/mod_order/order.php                                 [QSA,L]
-RewriteRule ^order/print/([^/]*)/$                              /modules/mod_order/order.php?task=print_order&id_order=$1    [QSA,L]
-RewriteRule ^order/update/$                                     /modules/mod_order/order.php?task=save_order                 [QSA,L]
-RewriteRule ^order/del_pos/$                                    /modules/mod_order/order.php?task=del_pos                    [QSA,L]
-RewriteRule ^order/del_all/$                                    /modules/mod_order/order.php?task=del_all                    [QSA,L]
-RewriteRule ^order/show_cart/$                                  /modules/mod_order/order.php?task=cart                       [QSA,L]
-RewriteRule ^order/sum/$                                        /modules/mod_order/order.php?task=onlysum                    [QSA,L]
-RewriteRule ^order/step2/$                                      /modules/mod_order/order.php?task=make_order_step2           [QSA,L]
-RewriteRule ^order/step3/$                                      /modules/mod_order/order.php?task=make_order_step3           [QSA,L]
-RewriteRule ^order/step4/$                                      /modules/mod_order/order.php?task=make_order_step4           [QSA,L]
-RewriteRule ^order/history/$                                    /modules/mod_order/order.php?task=history                    [QSA,L]
-RewriteRule ^order/result/$                                     /modules/mod_order/order.php?task=make_order_finish          [QSA,L]
-RewriteRule ^order/checkout_discount/$                          /modules/mod_order/order.php?task=order_discount             [QSA,L]
+RewriteRule ^order/$                                /modules/mod_order/order.php                                 [QSA,L]
+RewriteRule ^order/print/([^/]*)/$                  /modules/mod_order/order.php?task=print_order&id_order=$1    [QSA,L]
+RewriteRule ^order/print-client-waybill/([^/]*)/$   /modules/mod_order/order.php?task=print_order&id_order=$1&skip_user_check=1    [QSA,L]
+RewriteRule ^order/update/$                         /modules/mod_order/order.php?task=save_order                 [QSA,L]
+RewriteRule ^order/del_pos/$                        /modules/mod_order/order.php?task=del_pos                    [QSA,L]
+RewriteRule ^order/del_all/$                        /modules/mod_order/order.php?task=del_all                    [QSA,L]
+RewriteRule ^order/show_cart/$                      /modules/mod_order/order.php?task=cart                       [QSA,L]
+RewriteRule ^order/sum/$                            /modules/mod_order/order.php?task=onlysum                    [QSA,L]
+RewriteRule ^order/step2/$                          /modules/mod_order/order.php?task=make_order_step2           [QSA,L]
+RewriteRule ^order/step3/$                          /modules/mod_order/order.php?task=make_order_step3           [QSA,L]
+RewriteRule ^order/step4/$                          /modules/mod_order/order.php?task=make_order_step4           [QSA,L]
+RewriteRule ^order/history/$                        /modules/mod_order/order.php?task=history                    [QSA,L]
+RewriteRule ^order/result/$                         /modules/mod_order/order.php?task=make_order_finish          [QSA,L]
+RewriteRule ^order/checkout_discount/$              /modules/mod_order/order.php?task=order_discount             [QSA,L]
+RewriteRule ^scheta.html$                           /modules/mod_order/order.php?task=print_clients_order_page  [QSA,L]
 
 
 
