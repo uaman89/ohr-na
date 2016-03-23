@@ -1,5 +1,5 @@
 <?php
-if( strstr($_SERVER['SERVER_NAME'], 'ohrana.seotm.biz') ){
+if( strstr($_SERVER['SERVER_NAME'], '.seotm.biz') ){
     define("_HOST", "localhost"); // Hostname of the server
     define("_DBNAME", "ohrana"); // Database Name
     define("_USER","ohrana"); // User to access the database

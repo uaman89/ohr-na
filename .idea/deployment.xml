@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" promptOnRemoteOverwrite="CHECK_CONTENT" serverName="ohrana.seotm.biz" notifyRemoteChanges="true">
+  <component name="PublishConfigData" autoUpload="Always" serverName="ohrana.seotm.biz">
     <serverData>
       <paths name="ohrana.seotm.biz">
         <serverdata>

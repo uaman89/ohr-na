@@ -290,10 +290,9 @@ switch( $task )
          else{
 
              $my->id_order = $my->make_order();
-             if( empty($logon->user_id)){
-                 setcookie('kor_order_id['.$my->id_order.']', $my->id_order, time()+60*60*24*30, '/');
+             if( empty($logon->user_id) ){
+                 $kuka = setcookie('kor_order_id['.$my->id_order.']', $my->id_order, time()+60*60*24*30, '/');
              }
-
              //$Page->WriteHeader();
              if( !empty($my->id_order) ){
 
@@ -342,9 +341,15 @@ switch( $task )
             //if ( !empty($logon->user_id) ) {
                 $my->id_order = $my->make_order();
                 if( empty($logon->user_id)){
-                    setcookie('kor_order_id['.$my->id_order.']', $my->id_order, time()+60*60*24*30, '/');
+                    $kuka = setcookie('kor_order_id['.$my->id_order.']', $my->id_order, time()+60*60*24*30, '/');
                 }
-                $Page->WriteHeader();
+                else $kuka = 'no kuka';
+
+                echo '<div style="display: none">';
+                var_dump($kuka);
+                echo '</div>';
+
+                    $Page->WriteHeader();
 			    if( !empty($my->id_order) ){
                     $arr = $my->GetOrderCommentInArr($my->id_order);
                     if(is_array($arr))
@@ -443,7 +448,7 @@ switch( $task )
 //
 //        if ( isset($_COOKIE['print_client_order']) && $_COOKIE['print_client_order']=='printmebaby' ){
 
-        if ( isset($_REQUEST['magic_password']) && $_REQUEST['magic_password']=='printorder2016'){
+        if ( isset($_REQUEST['magic_password']) && $_REQUEST['magic_password']=='12345'){
             $my->showPrintClientOrderPage();
         }
         else{

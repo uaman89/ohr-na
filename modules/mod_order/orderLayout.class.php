@@ -488,10 +488,6 @@
                  //var_dump($email);
              ?>
 
-             <div class="sum-order display-none-desktop">
-                 <span>Итого к оплате: </span><div id="sum-mob"><?echo $this->sumAllFromData;?></div>
-             </div>
-
              <div class="subBody">
 
                  <div class="data-user-order">Оформить заказ</div>
@@ -2237,7 +2233,7 @@
 
                 if (!isset($logon)) $logon = new  UserAuthorize();
                 //echo '<br />$logon->user_id='.$logon->user_id.' $o_comm[buyer_id]='.$o_comm['buyer_id'];
-                if( ( intval($logon->user_id)!=intval($o_comm['buyer_id'])) OR (empty($o_comm['buyer_id']) AND !isset($_COOKIE['kor_order_id'][$this->id_order])) ){
+                if( ( (intval($logon->user_id)!=intval($o_comm['buyer_id'])) OR empty($o_comm['buyer_id'])) AND !isset($_COOKIE['kor_order_id'][$this->id_order]) ){
                      ?>
                      <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
                      <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru">
