@@ -1582,9 +1582,6 @@
             ?>
             <br/>
             <a class="print-order-link" href="javascript:void(0);" target="_blank" <?=$params;?>><?=$this->multi['TXT_PRINT_ORDER']?></a>
-            <?
-
-           ?>
             </div>
             <?
 
@@ -2229,25 +2226,25 @@
         {
             $o_comm = $this->GetOrderCommentInArr($this->id_order);
 
-            if (!isset($this->skipUserCheck)){
+            if (!isset($logon)) $logon = new  UserAuthorize();
+            if ( $logon->user_type == 1 || isset($_COOKIE['kor_order_id'][$this->id_order]) ) $this->skipUserCheck=1;
 
-                if (!isset($logon)) $logon = new  UserAuthorize();
-                //echo '<br />$logon->user_id='.$logon->user_id.' $o_comm[buyer_id]='.$o_comm['buyer_id'];
-                if( ( (intval($logon->user_id)!=intval($o_comm['buyer_id'])) OR empty($o_comm['buyer_id'])) AND !isset($_COOKIE['kor_order_id'][$this->id_order]) ){
+            if (!isset($this->skipUserCheck)){
+                //check user access rights
+                if( ( (intval($logon->user_id)!=intval($o_comm['buyer_id'])) OR empty($o_comm['buyer_id'])) ){
                      ?>
                      <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
                      <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru">
-                     <head>
-                        <title><?=$this->multi['TXT_STATEMENT_ACCOUNT']?> <?=$this->multi['TXT_ACCESS_DENIED']?>!</title>
-                     </head>
-                     <body>
-                        <h1><?=$this->multi['TXT_ACCESS_DENIED']?></h1>
-                      </body>
+                         <head>
+                            <title><?=$this->multi['TXT_STATEMENT_ACCOUNT']?> <?=$this->multi['TXT_ACCESS_DENIED']?>!</title>
+                         </head>
+                         <body>
+                            <h1><?=$this->multi['TXT_ACCESS_DENIED']?></h1>
+                         </body>
                      </html>
                      <?
                      return true;
                 }
-
             }
             $this->PrintWaybill();
             /*old code

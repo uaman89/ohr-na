@@ -67,6 +67,7 @@ include_once( SITE_PATH.'/include/classes/FrontSpr.class.php' );
 include_once( SITE_PATH.'/include/classes/UserAuthorize.class.php' );
 include_once( SITE_PATH.'/include/classes/FrontTags.class.php' );
 include_once( SITE_PATH.'/include/classes/FrontComments.class.php' );
+include_once( SITE_PATH.'/include/classes/TurboSmsSender.class.php' );
 
 include_once( SITE_PATH.'/modules/mod_cache/cache_define.php' );
 

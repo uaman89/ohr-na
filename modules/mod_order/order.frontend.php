@@ -291,7 +291,7 @@ switch( $task )
 
              $my->id_order = $my->make_order();
              if( empty($logon->user_id) ){
-                 $kuka = setcookie('kor_order_id['.$my->id_order.']', $my->id_order, time()+60*60*24*30, '/');
+                 setcookie('kor_order_id['.$my->id_order.']', $my->id_order, time()+60*60*24*30, '/');
              }
              //$Page->WriteHeader();
              if( !empty($my->id_order) ){

@@ -378,6 +378,9 @@ include_once( $_SERVER['DOCUMENT_ROOT'].'/modules/mod_order/order.defines.php' )
         </script>
         <?
 
+        $SysGroup = check_init('SysGroup', 'SysGroup');
+        $arr_grp = $SysGroup->GetGrpNameToArr('front');
+
         $n = count( $row_arr );
         for( $i = 0; $i < $n; $i++ ){
             $row = $row_arr[$i];
@@ -422,7 +425,10 @@ include_once( $_SERVER['DOCUMENT_ROOT'].'/modules/mod_order/order.defines.php' )
             else $class = '';
             ?>
 
+
             <td valign="top" align="center">
+
+                <!-- notes icon-->
                 <? if (isset($user_data)): ?>
                 <div class="about-user-wrapper">
                     <div class="widget-btn about-user-btn <?=$class?>"></div>
@@ -435,12 +441,14 @@ include_once( $_SERVER['DOCUMENT_ROOT'].'/modules/mod_order/order.defines.php' )
                 </div>
                 <? endif; ?>
 
+                <!-- email icon-->
                 <? if ( !empty($row['email']) ): ?>
                 <div class="send-to-email-wrapper">
                     <div class="widget-btn ste-btn" data-id-order="<?=$row['id_order']?>" data-email="<?=$row['email']?>" title="отправить на емейл"></div>
                 </div>
                 <? endif; ?>
 
+                <!-- orders count icon-->
                 <?
                 if ( !empty($row['buyer_id']) ) {
                     if ($this->fltrUserId != $row['buyer_id']) {
@@ -453,8 +461,6 @@ include_once( $_SERVER['DOCUMENT_ROOT'].'/modules/mod_order/order.defines.php' )
                         <?
                         }
                     }
-                    $SysGroup = check_init('SysGroup', 'SysGroup');
-                    $arr_grp = $SysGroup->GetGrpNameToArr('front');
 
                     //var_dump($user_data['group_id'],$arr_grp );
 
@@ -465,8 +471,20 @@ include_once( $_SERVER['DOCUMENT_ROOT'].'/modules/mod_order/order.defines.php' )
                         </div>
                     <?endif;
                 }
-                ?>
 
+//                var_dump( $row['sms_send_status'], $row['id_order']);
+
+                self::showTtnSmsStatusBadge( $row['sms_send_status'], $row['id_order'] );
+
+                // if it was sended, or has other status
+                if ( $row['sms_send_status'] == 1  || strlen($row['sms_send_status']) > 1){
+                    ?>
+                    <script>
+                        checkTtnSmsStatus('<?=$row['id_order']?>');
+                    </script>
+                    <?
+                }
+                ?>
             </td>
             <?
 
@@ -2134,5 +2152,35 @@ include_once( $_SERVER['DOCUMENT_ROOT'].'/modules/mod_order/order.defines.php' )
         return $arr_prices;
     }
 //----------------------------------------------------------------------------------------------------------------------
+
+
+    public static function showTtnSmsStatusBadge( $type, $id_order ){
+        switch( $type ){
+            case '0':
+                $badgeClass = 'not-sended-badge';
+                $title = 'не отправлено';
+                break;
+            case '1':
+                $badgeClass = 'sended-badge';
+                $title = 'отправлено';
+                break;
+            case '2':
+                $badgeClass = 'delivered-badge';
+                $title = 'доставленно';
+                break;
+            default:
+                $badgeClass = 'other-badge';
+                $title = $type;
+        }
+        ?>
+
+        <div id="ttnSmsStatus_<?=$id_order?>" class="ttn-sms-status">
+            <div class="<?=$badgeClass?> badge" title="<?=$title?>">TTH</div>
+        </div>
+        <?
+    }
+
+//--- end getTtnSmsStatusBadge -----------------------------------------------------------------------------------------
+
 
 } // end of class

@@ -1,0 +1,4 @@
+MySQL:
+
+    ALTER TABLE `mod_order_head` ADD `sms_id` VARCHAR(64) NOT NULL COMMENT 'sms_id in turbosms service' ;
+    ALTER TABLE `mod_order_head` ADD `sms_send_status` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '0 - didnt send, 1- sended, 2 - delivered, or some text...';

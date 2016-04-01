@@ -45,44 +45,35 @@ class OrderImpExp extends Order {
             <form id="ExportOrders" name="export_orders" method="post" action="<?=$script;?>">
                 <div style="padding: 5px 15px 0px 15px; text-align: center">
                     <input type="hidden" name="orders_to_export" value="<?=$strOrdersToExport?>">
-                    <?/*
-                    <b>статус заказа:</b>
                     <br/>
-                    <input id="payed" type="checkbox" name="order_status[]" value="4" checked="checked"/><label for="paid">оплаченые</label>
-                    <input id="canceled" type="checkbox" name="order_status[]" value="5"/><label for="canceled">отмененые</label>
-                    <br/>
-                    <br/>
-                    <b>период:</b>
-                    <br/>
-                    <label for="dateFrom">от:</label>
-                    <input id="dateFrom" class="date-picker-field" type="text" name="date_from" value="<?=$def_date_from?>"/>
-                    <label for="dateFrom">до:</label>
-                    <input id="dateTo" class="date-picker-field" type="text" name="date_to" value="<?=$def_date_to?>"/>
-                    */?>
-                    <br/>
+
                     <input type="submit"
                            name="export_to_csv"
                            value="Экспорт заказов в csv"
-                           onclick="Export('<?=$this->module;?>', 'export_orders_csv', 'exportCVSOrdesResult'); return false;"
-                           style="font-size: 16px;"
-                        />
+                           onclick="Export('<?=$this->module;?>', 'export_orders_csv', 'exportOrdesResult'); return false;"
+                           style="font-size: 16px;"/>
+                    <div id="exportOrdesResult" style="font-size: 14px; "></div>
+                    <br>
+                    <br>
+
+                    <input type="submit"
+                           name="sendTtnBtn"
+                           value="отправить ТТН через СМС"
+                           onclick="Export('<?=$this->module;?>', 'send_ttn', 'exportResult'); return false;"
+                           style="font-size: 16px;"/>
+                    <div id="exportResult" style="font-size: 14px; "></div>
                     <br/>
                     <br/>
-                    <div id="exportCVSOrdesResult" style="font-size: 14px; "></div>
+
                     <?/*
                     <input type="submit"
                            name="export_to_xls"
                            value="Экспорт заказов в xls"
                            onclick="Export('<?=$this->module;?>', 'export_orders', 'exportXLSOrdesResult'); return false;"
-                           style="font-size: 16px;"
-                        />
-                     */?>
-                    <br/>
-                    <br/>
+                           style="font-size: 16px;"/>
                     <div id="exportXLSOrdesResult" style="font-size: 14px; "></div>
+                     */?>
                 </div>
-
-
             </form>
         </fieldset>
 
@@ -103,13 +94,11 @@ class OrderImpExp extends Order {
                     success: function(html){
                         $(Did).html(html);
                         $(Did).show("slow");
-                    }/*,
-                     error: function (result, status)
-                     {
-                     $(Did).html(status);
-                     $(Did).css("display", "block");
-                     $(Did).show("slow");
-                     }*/
+                    },
+                    error: function( jqXHR, textStatus, errorThrown ){
+                        $(Did).html(textStatus + ' ' + jqXHR.status + ': ' + errorThrown);
+                        $(Did).show("slow");
+                    }
                 });
             }
         </script>
@@ -140,6 +129,8 @@ class OrderImpExp extends Order {
                 `".TblModOrderComments."`.`comment`,
                 `".TblModOrderComments."`.`pay_method`,
                 `".TblModOrderComments."`.`delivery_method`,
+                `".TblModOrderComments."`.`phone_mob` as `order_phone_mob`,
+                `".TblModOrderComments."`.`ttn`,
                 `".TblModOrder."`.`id_order`,
                 `".TblModOrder."`.`prod_id`,
                 `".TblModOrder."`.`price`,
@@ -333,7 +324,7 @@ class OrderImpExp extends Order {
 //--- end exportOrdersToExcelXML() -------------------------------------------------------------------------------------
 
 
-    function exportOrdersToCSV(){
+    public function exportOrdersToCSV(){
 
         $dataToExport = $this->GetDataToExport();
         if ( !$dataToExport ) return false;
@@ -457,24 +448,184 @@ class OrderImpExp extends Order {
     }
 //--- end of function exportOrdersToCSV ------------------------------------------------------------------------------------------------------------
 
-function formatCsvField( $str ){
-    $str = str_replace( '"', '""', $str ); //replace " to "".
-    $str = '"'.$str.'"'; //wrap string in " "
-    return $str;
-}
 
-function generateNameForExportFile(){
-    $str = 'ordersExport_'.date('d-m-Y');
-//    $arrStatusLabel = array( 4 => 'Paid', 5 => 'Canceled' );
-//    if (isset($this->order_status)) {
-//        foreach ($this->order_status as $status) {
-//            $str .= $arrStatusLabel[$status];
-//        }
-//        $str .= '_';
-//    }
-//    $str .= $this->dateFrom.'_'.$this->dateTo;
-    return $str;
-}
+    function formatCsvField( $str ){
+        $str = str_replace( '"', '""', $str ); //replace " to "".
+        $str = '"'.$str.'"'; //wrap string in " "
+        return $str;
+    }
+//--- end formatCsvField -------------------------------------------------------------------------------------------------------------------
 
-}// end of class CatalogImpExp	   
+
+    function generateNameForExportFile(){
+        $str = 'ordersExport_'.date('d-m-Y');
+    //    $arrStatusLabel = array( 4 => 'Paid', 5 => 'Canceled' );
+    //    if (isset($this->order_status)) {
+    //        foreach ($this->order_status as $status) {
+    //            $str .= $arrStatusLabel[$status];
+    //        }
+    //        $str .= '_';
+    //    }
+    //    $str .= $this->dateFrom.'_'.$this->dateTo;
+        return $str;
+    }
+//--- end generateNameForExportFile -------------------------------------------------------------------------------------------------------------------
+
+
+    public function sendTtn(){
+        if ( !($orderData = $this->getDataToExport()) ) return false;
+
+        $report = null;
+        $reportFail = null;
+//        var_dump($orderData);
+        foreach ($orderData as $order){
+            if ( !empty($order['ttn']) && !empty($order['order_phone_mob']) ) {
+                $arrOrderToSend[$order['id_order']] = array(
+                    'ttn' => $order['ttn'],
+                    'tel' => $order['order_phone_mob']
+                );
+                $tel = TurboSmsSender::formatTelNumber($order['order_phone_mob']);
+                $msg = 'TTH: '.$order['ttn'].' ohrana.ua';
+
+//                var_dump($tel, $order['ttn'], $msg);
+
+                $resultInfo = TurboSmsSender::sendSMS( $tel, $msg );
+
+                //for test:
+//                $resultInfo = array(
+//                    'Сообщения успешно отправлены',
+//                    'a1dccd82-56fd-586e-19f3-d1f89f018e16',
+//                );
+
+//                var_dump($resultInfo);
+
+                $sms_id = null;
+                if ( is_array($resultInfo) ){
+//                    $reportText = $resultInfo[0];
+                    $sms_id = $resultInfo[1];
+                }
+                else if ( gettype($resultInfo) == 'string' ){
+//                    $reportText = $resultInfo;
+                }
+                else{
+//                    $reportText = 'error!';
+                }
+
+                $report[ $order['id_order'] ] = array(
+//                    'status' => 'susscess',
+//                    'tel' => $tel,
+//                    'message' => $reportText,
+                    'sms_id' => $sms_id
+                );
+
+                if (!empty($sms_id)){
+                    $q = "
+                        UPDATE `".TblModOrderComments."` SET
+                            `sms_id`='".$sms_id."',
+                            `sms_send_status` = '1'
+                        WHERE `id_order`='".$order['id_order']."' ";
+                    $this->db->db_Query($q);
+
+                    $strIdsToCheckTtn = ( isset($strIdsToCheckTtn) ) ? $strIdsToCheckTtn .= ', "'.$order['id_order'].'" ' : '"'.$order['id_order'].'"';
+                }
+            }
+            else{
+
+                $reportFail[ $order['id_order'] ] = array(
+                    'status' => 'fail',
+                    'message' => 'Не указан ТТН или номер телефона',
+                    'tel' => $order['order_phone_mob'],
+                    'ttn' => $order['ttn'],
+                );
+            }
+        }//foreach
+
+        //var_dump($strIdsToCheckTtn);
+
+        ?>
+        <div id="smsReportWrapper" style="display: none">
+            <div class="sms-report">
+                <h2>Отчет об смс-отправке ТТН:</h2>
+                Успешно отправленно: <b><?=count($report)?></b>
+                <br>
+                <? if (($failsCnt = count($reportFail)) > 0 ): ?>
+                    <hr>
+                    Не удалось отправить: <b><?=$failsCnt?></b><br>
+                    <br>
+                    <br>
+                    <?
+                    foreach ($reportFail as $orderId => $orderInfo){
+                        echo 'Заказ №: '.$orderId.': ';
+                        if ( empty($orderInfo['tel']) )
+                            echo 'не указан номер телефона! ';
+                        if ( empty($orderInfo['ttn']) )
+                            echo 'не указан TTH!';
+                        echo '<br><br>';
+                    }
+                    ?>
+                <? endif; ?>
+            </div>
+        </div>
+
+        <script>
+            var htmlReport = $('#smsReportWrapper').html();
+            $.fancybox({ content: htmlReport });
+
+            <? if (!empty($strIdsToCheckTtn)): ?>
+                var arrCheckTtn = new Array( <?=$strIdsToCheckTtn?> );
+                for ( key in arrCheckTtn){
+                    checkTtnSmsStatus(arrCheckTtn[key]);
+                }
+            <? endif; ?>
+        </script>
+        <?
+    }
+
+//--- end sendTTN -------------------------------------------------------------------------------------------------------------------
+
+
+    public static function checkTtnSmsStatus( $id_order ){
+        if ( empty($id_order) ) return false;
+
+        $db = DBs::getInstance();
+        $q = "
+            SELECT `sms_id`
+            FROM `".TblModOrderComments."`
+            WHERE `id_order` = '{$id_order}'
+        ";
+
+        $res = $db->db_Query($q);
+        if (!$res) return false;
+
+//        var_dump($q);
+        $row = $db->db_FetchAssoc();
+
+//        var_dump($row);
+        if ( empty($row['sms_id'])) {
+            echo 'empty sms ID';
+            return false;
+        }
+        
+        $statusText = TurboSmsSender::getSmsStatus( $row['sms_id'] );
+//        var_dump($status);
+
+        $status = ( $statusText == 'Сообщение доставлено получателю' ) ? 2 : $statusText;
+
+        $q = "
+            UPDATE `".TblModOrderComments."` SET
+                `sms_send_status` = '$status'
+            WHERE `id_order` = '{$id_order}'
+        ";
+
+        $res = $db->db_Query($q);
+        if (!$res) return false;
+        echo OrderCtrl::showTtnSmsStatusBadge($status, $id_order);
+        return;
+
+    }
+
+//--- end checkTtnSmsStatus ------------------------------------------------------------------------------------------------
+
+}
+// end of class OrderImpExp
 ?>

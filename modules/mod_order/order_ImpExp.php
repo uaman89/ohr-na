@@ -44,6 +44,8 @@ $OrderImpExp->module = ( isset( $_REQUEST['module'] ) ) ? $_REQUEST['module'] : 
 
 $OrderImpExp->arrOrderId = ( isset( $_REQUEST['id_del'] ) ) ? $_REQUEST['id_del'] : NULL;
 $OrderImpExp->strOrderId = ( isset( $_REQUEST['orders_to_export'] ) ) ? $_REQUEST['orders_to_export'] : NULL;
+$OrderImpExp->id_order = ( isset( $_REQUEST['id_order'] ) ) ? $_REQUEST['id_order'] : NULL;
+
 $OrderImpExp->from_charset = "utf-8";
 $OrderImpExp->to_charset = "windows-1251//IGNORE";
 
@@ -59,6 +61,17 @@ switch( $OrderImpExp->task )
     case 'export_orders':
         $OrderImpExp->exportOrdersToExcelXML();
         break;
+
+    case 'send_ttn':
+        $OrderImpExp->sendTtn();
+        break;
+
+    case 'check_ttn_sms_status':
+        if (!empty($OrderImpExp->id_order)){
+            $OrderImpExp::checkTtnSmsStatus( $OrderImpExp->id_order );
+        }
+        else echo 'wrong data!<br>'.__FILE__.' line: '.__LINE__;
+        exit; //because its using for ajax
 
     default:
         $OrderImpExp->showFrom();

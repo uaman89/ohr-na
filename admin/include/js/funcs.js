@@ -457,3 +457,36 @@ function init_widget_buttons(){
 /* finish send-to-email block */
 }
 
+/* check sms status for order TTN */
+function checkTtnSmsStatus( id_order ){
+    var targetBlock = $('#ttnSmsStatus_' + id_order);
+    $.ajax({
+        type: "POST",
+        url: '/modules/mod_order/order_ImpExp.php?module=106',
+        data: {
+            task: 'check_ttn_sms_status',
+            id_order: id_order,
+        },
+        beforeSend : function(){
+            targetBlock.html( '<img src="/admin/images/ajax-loader.gif"/>');
+        },
+        success: function(html){
+            targetBlock.html(html);
+        },
+        error: function( jqXHR, textStatus, errorThrown ){
+            targetBlock.html(textStatus + ' ' + jqXHR.status + ': ' + errorThrown);
+        }
+    });
+}
+$(window).load(function(){
+    $('.ttn-sms-status').click(function(){
+        console.log($(this).find('.not-sended-badge').length);
+        if ( $(this).find('.not-sended-badge').length > 0 ){
+            alert('смс не отправлялось!');
+            return;
+        }
+        var id  = $(this).attr('id').split('_')[1];
+        if (id != undefined) checkTtnSmsStatus( id );
+    });
+});
+/* end: check sms status for order TTN */
