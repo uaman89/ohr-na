@@ -476,18 +476,18 @@ class OrderImpExp extends Order {
 
 
     public function sendTtn(){
-        if ( !($orderData = $this->getDataToExport()) ) return false;
+        if ( !($orderData = $this->getOrdersHeadDataToExport()) ) return false;
 
         $report = null;
         $reportFail = null;
 //        var_dump($orderData);
         foreach ($orderData as $order){
-            if ( !empty($order['ttn']) && !empty($order['order_phone_mob']) ) {
+            if ( !empty($order['ttn']) && !empty($order['phone_mob']) ) {
                 $arrOrderToSend[$order['id_order']] = array(
                     'ttn' => $order['ttn'],
-                    'tel' => $order['order_phone_mob']
+                    'tel' => $order['phone_mob']
                 );
-                $tel = TurboSmsSender::formatTelNumber($order['order_phone_mob']);
+                $tel = TurboSmsSender::formatTelNumber($order['phone_mob']);
                 $msg = "Ваш заказ отправлен новой почтой: ".$order['ttn'].".
 Ohrana.ua 0985438444";
 
@@ -538,7 +538,7 @@ Ohrana.ua 0985438444";
                 $reportFail[ $order['id_order'] ] = array(
                     'status' => 'fail',
                     'message' => 'Не указан ТТН или номер телефона',
-                    'tel' => $order['order_phone_mob'],
+                    'tel' => $order['phone_mob'],
                     'ttn' => $order['ttn'],
                 );
             }
@@ -629,6 +629,31 @@ Ohrana.ua 0985438444";
     }
 
 //--- end checkTtnSmsStatus ------------------------------------------------------------------------------------------------
+
+
+    function getOrdersHeadDataToExport()
+    {
+        if ( empty($this->strOrderId)) return false;
+
+        $arr = array();
+
+        $q = "SELECT * FROM `".TblModOrderComments."` WHERE `id_order` IN (".$this->strOrderId.")";
+        $res = $this->db->db_Query( $q );
+        $rows = $this->db->db_GetNumRows($res);
+        if($rows==0) return false;
+
+        $result = false;
+
+        while ( $row = $this->db->db_FetchAssoc()) {
+            $result[] = $row;
+        }
+
+        return $result;
+    } // end of funtion  GetOrderCommentInArr
+
+//--- end getOrdersHeadDataToExport ------------------------------------------------------------------------------------------------
+
+
 
 }
 // end of class OrderImpExp
