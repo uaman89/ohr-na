@@ -166,6 +166,8 @@ class OrderImpExp extends Order {
             return false;
         }
 
+        $dataToExport = false;
+
         //2. form arrays to manage data
         while ( $row = $this->Right->db_FetchAssoc() ){
 
@@ -175,6 +177,7 @@ class OrderImpExp extends Order {
 //        var_dump($dataToExport);
 
         //end: get data fo export
+        if (empty($dataToExport)) echo 'нет данных. возможно нет товаров в заказе';
         return $dataToExport;
     }
 //--- end getDataToExport() ----------------------------------------------------------------------------------------------------------------------------------------------
@@ -485,7 +488,8 @@ class OrderImpExp extends Order {
                     'tel' => $order['order_phone_mob']
                 );
                 $tel = TurboSmsSender::formatTelNumber($order['order_phone_mob']);
-                $msg = 'TTH: '.$order['ttn'].' ohrana.ua';
+                $msg = "Ваш заказ отправлен новой почтой: ".$order['ttn'].".
+Ohrana.ua 0985438444";
 
 //                var_dump($tel, $order['ttn'], $msg);
 

@@ -472,7 +472,7 @@ include_once( $_SERVER['DOCUMENT_ROOT'].'/modules/mod_order/order.defines.php' )
                     <?endif;
                 }
 
-//                var_dump( $row['sms_send_status'], $row['id_order']);
+                //var_dump( $row['sms_send_status'], $row['id_order']);
 
                 self::showTtnSmsStatusBadge( $row['sms_send_status'], $row['id_order'] );
 
@@ -2156,6 +2156,7 @@ include_once( $_SERVER['DOCUMENT_ROOT'].'/modules/mod_order/order.defines.php' )
 
     public static function showTtnSmsStatusBadge( $type, $id_order ){
         switch( $type ){
+            case '':
             case '0':
                 $badgeClass = 'not-sended-badge';
                 $title = 'не отправлено';
