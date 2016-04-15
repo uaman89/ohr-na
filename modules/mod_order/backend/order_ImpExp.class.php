@@ -400,7 +400,7 @@ class OrderImpExp extends Order {
             $delivery = ( isset($arrDeliveryMethods[ $prod['delivery_method'] ]) ) ? $arrDeliveryMethods[ $prod['delivery_method'] ] : null;
             $comment = 'Оплата: '.$payment.'
 Доставка: '.$delivery.'
-Адресс: '.$prod['addr'].'
+Адресс: '.trim((string)$prod['addr']).'
 Комментарий: '.$prod['comment'];
 
             $outputBody .= $this->formatCsvField( $comment).$endOfLine;
@@ -422,6 +422,7 @@ class OrderImpExp extends Order {
         }
 
         //$output = $this->Conv($outputBody,$this->from_charset,$this->to_charset);
+
         $output = iconv($this->from_charset, $this->to_charset, $outputBody);
 
         // Записываем $out в наш открытый файл.
