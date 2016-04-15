@@ -1059,7 +1059,7 @@ include_once( $_SERVER['DOCUMENT_ROOT'].'/modules/mod_order/order.defines.php' )
                  <?php
                  if( $this->id_order!=NULL ):
                      $link = '/modules/mod_order/print_bill.php?module=' . $this->module . '&id_order=' . $this->id_order;
-                     $link2 = $link.'&waybill=1';
+                     $link2 = $link.'&waybill=service_waybill';
                      $width = '770px';
                      $height = '1440px';
                      $params = "OnClick='window.open(\"" . $link . "\", \"\", \"width=" . $width . ", height=" . $height . ", status=0, toolbar=0, location=0, menubar=0, resizable=0, scrollbars=1\"); return false;'";

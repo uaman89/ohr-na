@@ -47,7 +47,7 @@ $OrderImpExp->strOrderId = ( isset( $_REQUEST['orders_to_export'] ) ) ? $_REQUES
 $OrderImpExp->id_order = ( isset( $_REQUEST['id_order'] ) ) ? $_REQUEST['id_order'] : NULL;
 
 $OrderImpExp->from_charset = "utf-8";
-$OrderImpExp->to_charset = "windows-1251//IGNORE";
+$OrderImpExp->to_charset = "windows-1251//TRANSLIT//IGNORE";
 
 
 //echo '<br>task='.$task;

@@ -376,7 +376,7 @@ function make_order()
             return false;
         }
         $q = "DELETE FROM `".TblModTmpOrder."` WHERE `id`='".$row['id']."'";
-		//!!!!$tmp_res = $tmb_db1->db_Query($q);
+		$tmp_res = $tmb_db1->db_Query($q);
 		//echo '<br>q='.$q.' $tmp_res='.$tmp_res.' $tmb_db->result='.$tmb_db->result;
         $qnt_all += $quantity[$i];
         $sum_all += $sum;
